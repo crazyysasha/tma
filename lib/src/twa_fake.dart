@@ -66,4 +66,7 @@ class TwaFake extends TwaInterface {
   void requestFullscreen() {}
   @override
   void exitFullscreen() {}
+
+  @override
+  void close() {}
 }

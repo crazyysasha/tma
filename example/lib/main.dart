@@ -41,7 +41,7 @@ Future<void> main() async {
               ),
             ),
           ],
-          child: TelegramMediaQueryProvider(child: const MyApp()),
+          child: TelegramMediaQueryProvider(child: const AppWidget()),
         ),
       );
     },
@@ -109,8 +109,8 @@ class CupertinoSheetPage<T> extends Page<T> {
   }
 }
 
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+class AppWidget extends ConsumerWidget {
+  const AppWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -120,6 +120,7 @@ class MyApp extends ConsumerWidget {
           (context, child) => Padding(
             padding: EdgeInsets.only(top: MediaQuery.viewInsetsOf(context).top),
             child: Scaffold(
+              backgroundColor: Colors.transparent,
               body: Column(
                 children: [
                   Container(
@@ -150,7 +151,27 @@ class ModalScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return BottomSheet(
+      showDragHandle: true,
+      enableDrag: true,
+      onClosing: () {},
+      builder:
+          (context) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Modal Screen"),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text("Close"),
+                ),
+              ],
+            ),
+          ),
+    );
   }
 }
 

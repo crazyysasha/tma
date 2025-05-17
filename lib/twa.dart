@@ -76,4 +76,7 @@ class Twa extends TwaInterface {
 
   @override
   void ready() => _platform.ready();
+
+  @override
+  void close() => _platform.close();
 }

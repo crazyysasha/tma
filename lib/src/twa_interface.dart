@@ -30,4 +30,6 @@ abstract class TwaInterface {
   void exitFullscreen();
 
   void ready();
+
+  void close();
 }
