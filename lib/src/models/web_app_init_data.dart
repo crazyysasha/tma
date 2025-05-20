@@ -22,6 +22,8 @@ final class WebAppInitData extends Equatable {
   // The raw init data string
   final String? raw;
 
+  final String? startParam;
+
   const WebAppInitData({
     required this.user,
     required this.chatType,
@@ -30,6 +32,7 @@ final class WebAppInitData extends Equatable {
     required this.hash,
     required this.signature,
     required this.raw,
+    required this.startParam,
   });
 
   const WebAppInitData.fake({
@@ -40,6 +43,7 @@ final class WebAppInitData extends Equatable {
     this.hash = 'fake',
     this.signature = 'fake',
     this.raw = 'fake',
+    this.startParam = 'fake',
   });
 
   static WebAppInitData fromRawString(String raw) {
@@ -65,6 +69,7 @@ final class WebAppInitData extends Equatable {
       authDate: int.tryParse(json['auth_date'].toString()),
       signature: json['signature'] as String?,
       hash: json['hash'] as String?,
+      startParam: json['start_param'] as String?,
       raw: raw,
     );
   }
@@ -77,6 +82,7 @@ final class WebAppInitData extends Equatable {
     "authDate: $authDate",
     "hash: $hash",
     "signature: $signature",
+    "startParam: $startParam",
     "raw: $raw",
   ];
 }

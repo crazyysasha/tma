@@ -8,6 +8,7 @@ final class WebAppInitDataUnsafe extends WebAppInitData {
     required super.authDate,
     required super.signature,
     required super.hash,
+    required super.startParam,
   }) : super(raw: "");
 
   const WebAppInitDataUnsafe.fake({
@@ -17,5 +18,6 @@ final class WebAppInitDataUnsafe extends WebAppInitData {
     super.authDate = 0,
     super.signature = 'fake',
     super.hash = 'fake',
+    super.startParam = 'fake',
   }) : super.fake(raw: "unsafe-fake");
 }

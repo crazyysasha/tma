@@ -305,6 +305,7 @@ extension type WebAppInitDataJSObject._(JSObject _) implements JSObject {
       },
       signature: signature,
       hash: hash,
+      startParam: startParam,
     );
   }
 }
