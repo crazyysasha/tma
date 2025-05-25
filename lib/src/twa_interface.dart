@@ -32,4 +32,6 @@ abstract class TwaInterface {
   void ready();
 
   void close();
+
+  Future<bool> shareMessage(String messageId);
 }

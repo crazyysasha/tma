@@ -99,6 +99,11 @@ class TwaWeb extends TwaInterface {
   void close() {
     return telegram.webApp.close();
   }
+
+  @override
+  Future<bool> shareMessage(String messageId) {
+    return telegram.webApp.shareMessage(messageId);
+  }
 }
 
 @JS('window.Telegram')
@@ -158,6 +163,24 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
   external JSVoid ready();
 
   external JSVoid close();
+
+  @JS("shareMessage")
+  external shareMessageJS(JSString messageId, JSFunction callback);
+
+  Future<bool> shareMessage(String messageId) {
+    final completer = Completer<bool>();
+    try {
+      shareMessageJS(
+        messageId.toJS,
+        (JSBoolean isAccepted) {
+          completer.complete(isAccepted.toDart);
+        }.toJS,
+      );
+    } catch (e) {
+      completer.completeError(e);
+    }
+    return completer.future;
+  }
 }
 
 extension type SafeAreaInsetJSObject._(JSObject _) implements JSObject {

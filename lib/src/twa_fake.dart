@@ -69,4 +69,9 @@ class TwaFake extends TwaInterface {
 
   @override
   void close() {}
+
+  @override
+  Future<bool> shareMessage(String messageId) {
+    return Future.value(false);
+  }
 }

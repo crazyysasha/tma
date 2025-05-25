@@ -79,4 +79,9 @@ class Twa extends TwaInterface {
 
   @override
   void close() => _platform.close();
+
+  @override
+  Future<bool> shareMessage(String messageId) {
+    return _platform.shareMessage(messageId);
+  }
 }
