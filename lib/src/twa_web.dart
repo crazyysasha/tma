@@ -165,7 +165,7 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
   external JSVoid close();
 
   @JS("shareMessage")
-  external shareMessageJS(JSString messageId, JSFunction callback);
+  external JSVoid shareMessageJS(JSString messageId, JSFunction callback);
 
   Future<bool> shareMessage(String messageId) {
     final completer = Completer<bool>();
