@@ -34,4 +34,8 @@ abstract class TwaInterface {
   void close();
 
   Future<bool> shareMessage(String messageId);
+
+  void openLink(String url, {bool tryInstantView = false});
+
+  void openTelegramLink(String url, {bool forceRequest = false});
 }

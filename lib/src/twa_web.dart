@@ -104,6 +104,16 @@ class TwaWeb extends TwaInterface {
   Future<bool> shareMessage(String messageId) {
     return telegram.webApp.shareMessage(messageId);
   }
+
+  @override
+  void openLink(String url, {bool tryInstantView = false}) {
+    return telegram.webApp.openLink(url, tryInstantView: tryInstantView);
+  }
+
+  @override
+  void openTelegramLink(String url, {bool forceRequest = false}) {
+    return telegram.webApp.openTelegramLink(url, forceRequest: forceRequest);
+  }
 }
 
 @JS('window.Telegram')
@@ -180,6 +190,20 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
       completer.completeError(e);
     }
     return completer.future;
+  }
+
+  @JS("openLink")
+  external JSVoid openLinkJS(JSString url, JSObject tryInstantView);
+
+  void openLink(String url, {bool tryInstantView = false}) {
+    openLinkJS(url.toJS, {"try_instant_view": tryInstantView.toJS}.toJSBox);
+  }
+
+  @JS("openTelegramLink")
+  external JSVoid openTelegramLinkJS(JSString url, JSObject forceRequest);
+
+  void openTelegramLink(String url, {bool forceRequest = false}) {
+    openTelegramLinkJS(url.toJS, {"force_request": forceRequest.toJS}.toJSBox);
   }
 }
 

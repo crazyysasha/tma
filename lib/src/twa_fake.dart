@@ -74,4 +74,10 @@ class TwaFake extends TwaInterface {
   Future<bool> shareMessage(String messageId) {
     return Future.value(false);
   }
+
+  @override
+  void openLink(String url, {bool tryInstantView = false}) {}
+
+  @override
+  void openTelegramLink(String url, {bool forceRequest = false}) {}
 }

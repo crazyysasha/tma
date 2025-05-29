@@ -84,4 +84,14 @@ class Twa extends TwaInterface {
   Future<bool> shareMessage(String messageId) {
     return _platform.shareMessage(messageId);
   }
+
+  @override
+  void openLink(String url, {bool tryInstantView = false}) {
+    return _platform.openLink(url, tryInstantView: tryInstantView);
+  }
+
+  @override
+  void openTelegramLink(String url, {bool forceRequest = false}) {
+    return _platform.openTelegramLink(url, forceRequest: forceRequest);
+  }
 }
