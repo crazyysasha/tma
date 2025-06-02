@@ -47,6 +47,13 @@ class TwaFake extends TwaInterface {
   );
 
   @override
+  HapticFeedback get hapticFeedback => HapticFeedback(
+    impactOccurred: (style) {},
+    notificationOccurred: (type) {},
+    selectionChanged: () {},
+  );
+
+  @override
   Future<RequestContactResult> requestContact() async {
     return RequestContactResult.fake();
   }
@@ -80,4 +87,7 @@ class TwaFake extends TwaInterface {
 
   @override
   void openTelegramLink(String url, {bool forceRequest = false}) {}
+
+  @override
+  void showScanQrPopup(String text, [Function(String result)? test]) {}
 }

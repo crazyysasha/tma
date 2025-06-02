@@ -47,6 +47,11 @@ class TwaWeb extends TwaInterface {
   }
 
   @override
+  HapticFeedback get hapticFeedback {
+    return telegram.webApp.hapticFeedback.toDart;
+  }
+
+  @override
   Future<RequestContactResult> requestContact() async {
     final completer = Completer<RequestContactResult>();
     try {
@@ -114,6 +119,11 @@ class TwaWeb extends TwaInterface {
   void openTelegramLink(String url, {bool forceRequest = false}) {
     return telegram.webApp.openTelegramLink(url, forceRequest: forceRequest);
   }
+
+  @override
+  void showScanQrPopup(String text, [Function(String result)? test]) {
+    return telegram.webApp.showScanQrPopup(text, test);
+  }
 }
 
 @JS('window.Telegram')
@@ -139,6 +149,9 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
 
   @JS('LocationManager')
   external LocationManagerJSObject get locationManager;
+
+  @JS('HapticFeedback')
+  external HapticFeedbackJSObject get hapticFeedback;
 
   @JS("requestContact")
   external JSVoid requestContactJS(JSFunction callback);
@@ -205,6 +218,20 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
   void openTelegramLink(String url, {bool forceRequest = false}) {
     openTelegramLinkJS(url.toJS, {"force_request": forceRequest.toJS}.toJSBox);
   }
+
+  @JS("showScanQrPopup")
+  external JSVoid showScanQrPopupJS(JSString text, JSFunction? test);
+
+  void showScanQrPopup(String text, [Function(String result)? test]) {
+    showScanQrPopupJS(
+      text.toJS,
+      test != null
+          ? (JSString result) {
+            test(result.toDart);
+          }.toJS
+          : null,
+    );
+  }
 }
 
 extension type SafeAreaInsetJSObject._(JSObject _) implements JSObject {
@@ -215,6 +242,20 @@ extension type SafeAreaInsetJSObject._(JSObject _) implements JSObject {
 
   SafeAreaInset get toDart =>
       SafeAreaInset(left: left, top: top, right: right, bottom: bottom);
+}
+
+extension type HapticFeedbackJSObject._(JSObject _) implements JSObject {
+  external JSVoid impactOccurred(JSString style);
+
+  external JSVoid notificationOccurred(JSString type);
+
+  external JSVoid selectionChanged();
+
+  HapticFeedback get toDart => HapticFeedback(
+    impactOccurred: (style) => impactOccurred(style.name.toJS),
+    notificationOccurred: (type) => notificationOccurred(type.name.toJS),
+    selectionChanged: () => selectionChanged(),
+  );
 }
 
 Completer<void>? _locationInitCompleter;

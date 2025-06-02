@@ -18,6 +18,7 @@ part 'src/models/request_contact_result_response_unsafe.dart';
 part 'src/models/location_data.dart';
 
 part 'src/services/location_manager.dart';
+part 'src/services/haptic_feedback.dart';
 
 final TwaInterface _platform = createTwa();
 
@@ -48,6 +49,9 @@ class Twa extends TwaInterface {
 
   @override
   LocationManager get locationManager => _platform.locationManager;
+
+  @override
+  HapticFeedback get hapticFeedback => _platform.hapticFeedback;
 
   @override
   Future<RequestContactResult> requestContact() {
@@ -93,5 +97,10 @@ class Twa extends TwaInterface {
   @override
   void openTelegramLink(String url, {bool forceRequest = false}) {
     return _platform.openTelegramLink(url, forceRequest: forceRequest);
+  }
+
+  @override
+  void showScanQrPopup(String text, [Function(String result)? test]) {
+    return _platform.showScanQrPopup(text, test);
   }
 }

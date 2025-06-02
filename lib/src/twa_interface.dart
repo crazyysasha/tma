@@ -19,6 +19,8 @@ abstract class TwaInterface {
 
   LocationManager get locationManager;
 
+  HapticFeedback get hapticFeedback;
+
   Future<RequestContactResult> requestContact();
 
   Future<bool> requestWriteAccess();
@@ -38,4 +40,6 @@ abstract class TwaInterface {
   void openLink(String url, {bool tryInstantView = false});
 
   void openTelegramLink(String url, {bool forceRequest = false});
+
+  void showScanQrPopup(String text, [Function(String result)? test]);
 }
