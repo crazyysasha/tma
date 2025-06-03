@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'dart:js_interop';
+import 'dart:ui';
 
 import 'package:twa/src/models/safe_area_inset.dart';
 
@@ -124,6 +125,26 @@ class TwaWeb extends TwaInterface {
   void showScanQrPopup(String text, [Function(String result)? test]) {
     return telegram.webApp.showScanQrPopup(text, test);
   }
+
+  @override
+  double get viewportHeight {
+    return telegram.webApp.viewportHeight;
+  }
+
+  @override
+  double get viewportStableHeight {
+    return telegram.webApp.viewportStableHeight;
+  }
+
+  VoidCallback onViewportChanged(Function() callback) {
+    var handler =
+        (JSObject event) {
+          callback();
+        }.toJS;
+    telegram.webApp.onEvent('viewport_changed'.toJS, handler);
+
+    return () => telegram.webApp.offEvent('viewport_changed'.toJS, handler);
+  }
 }
 
 @JS('window.Telegram')
@@ -232,6 +253,24 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
           : null,
     );
   }
+
+  double get viewportHeight {
+    return viewportHeightJS.toDartDouble;
+  }
+
+  @JS('viewportHeight')
+  external JSNumber get viewportHeightJS;
+
+  double get viewportStableHeight {
+    return viewportStableHeightJS.toDartDouble;
+  }
+
+  @JS('viewportStableHeight')
+  external JSNumber get viewportStableHeightJS;
+
+  external JSVoid onEvent(JSString eventName, JSFunction callback);
+
+  external JSVoid offEvent(JSString eventName, JSFunction callback);
 }
 
 extension type SafeAreaInsetJSObject._(JSObject _) implements JSObject {

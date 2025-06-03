@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:twa/src/models/safe_area_inset.dart';
 
 import '../twa.dart';
@@ -83,6 +85,12 @@ class TwaFake extends TwaInterface {
   }
 
   @override
+  double get viewportHeight => 0;
+
+  @override
+  double get viewportStableHeight => 0;
+
+  @override
   void openLink(String url, {bool tryInstantView = false}) {}
 
   @override
@@ -90,4 +98,9 @@ class TwaFake extends TwaInterface {
 
   @override
   void showScanQrPopup(String text, [Function(String result)? test]) {}
+
+  @override
+  VoidCallback onViewportChanged(Function() callback) {
+    return () {};
+  }
 }

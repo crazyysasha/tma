@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:equatable/equatable.dart';
 import 'package:twa/src/models/safe_area_inset.dart';
@@ -54,6 +55,11 @@ class Twa extends TwaInterface {
   HapticFeedback get hapticFeedback => _platform.hapticFeedback;
 
   @override
+  double get viewportHeight => _platform.viewportHeight;
+  @override
+  double get viewportStableHeight => _platform.viewportStableHeight;
+
+  @override
   Future<RequestContactResult> requestContact() {
     return _platform.requestContact();
   }
@@ -102,5 +108,10 @@ class Twa extends TwaInterface {
   @override
   void showScanQrPopup(String text, [Function(String result)? test]) {
     return _platform.showScanQrPopup(text, test);
+  }
+
+  @override
+  VoidCallback onViewportChanged(Function() callback) {
+    return _platform.onViewportChanged(callback);
   }
 }

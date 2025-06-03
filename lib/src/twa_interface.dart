@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:twa/src/models/safe_area_inset.dart';
 
 import '../twa.dart';
@@ -34,6 +36,12 @@ abstract class TwaInterface {
   void ready();
 
   void close();
+
+  double get viewportHeight;
+
+  double get viewportStableHeight;
+
+  VoidCallback onViewportChanged(Function() callback);
 
   Future<bool> shareMessage(String messageId);
 
