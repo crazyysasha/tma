@@ -144,7 +144,7 @@ class TwaWeb extends TwaInterface {
         }.toJS;
     telegram.webApp.onEvent('viewportChanged'.toJS, handler);
 
-    return () => telegram.webApp.offEvent('viewport_changed'.toJS, handler);
+    return () => telegram.webApp.offEvent('viewportChanged'.toJS, handler);
   }
 }
 
