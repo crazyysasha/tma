@@ -136,12 +136,13 @@ class TwaWeb extends TwaInterface {
     return telegram.webApp.viewportStableHeight;
   }
 
+  @override
   VoidCallback onViewportChanged(Function() callback) {
     var handler =
         (JSObject event) {
           callback();
         }.toJS;
-    telegram.webApp.onEvent('viewport_changed'.toJS, handler);
+    telegram.webApp.onEvent('viewportChanged'.toJS, handler);
 
     return () => telegram.webApp.offEvent('viewport_changed'.toJS, handler);
   }
