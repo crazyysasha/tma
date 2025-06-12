@@ -103,4 +103,7 @@ class TwaFake extends TwaInterface {
   VoidCallback onViewportChanged(Function() callback) {
     return () {};
   }
+
+  @override
+  void closeScanQrPopup() {}
 }

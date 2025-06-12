@@ -114,4 +114,9 @@ class Twa extends TwaInterface {
   VoidCallback onViewportChanged(Function() callback) {
     return _platform.onViewportChanged(callback);
   }
+
+  @override
+  void closeScanQrPopup() {
+    return _platform.closeScanQrPopup();
+  }
 }

@@ -127,6 +127,11 @@ class TwaWeb extends TwaInterface {
   }
 
   @override
+  void closeScanQrPopup() {
+    return telegram.webApp.closeScanQrPopup();
+  }
+
+  @override
   double get viewportHeight {
     return telegram.webApp.viewportHeight;
   }
@@ -254,6 +259,8 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
           : null,
     );
   }
+
+  external JSVoid closeScanQrPopup();
 
   double get viewportHeight {
     return viewportHeightJS.toDartDouble;
