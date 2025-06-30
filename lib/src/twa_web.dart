@@ -151,6 +151,11 @@ class TwaWeb extends TwaInterface {
 
     return () => telegram.webApp.offEvent('viewportChanged'.toJS, handler);
   }
+
+  @override
+  void shareToStory(String mediaUrl, [StoryShareParams? params]) {
+    telegram.webApp.shareToStory(mediaUrl, params);
+  }
 }
 
 @JS('window.Telegram')

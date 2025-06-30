@@ -45,6 +45,8 @@ abstract class TwaInterface {
 
   Future<bool> shareMessage(String messageId);
 
+  void shareToStory(String mediaUrl, [StoryShareParams? params]);
+
   void openLink(String url, {bool tryInstantView = false});
 
   void openTelegramLink(String url, {bool forceRequest = false});

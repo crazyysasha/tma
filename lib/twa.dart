@@ -120,4 +120,9 @@ class Twa extends TwaInterface {
   void closeScanQrPopup() {
     return _platform.closeScanQrPopup();
   }
+
+  @override
+  void shareToStory(String mediaUrl, [StoryShareParams? params]) {
+    return _platform.shareToStory(mediaUrl, params);
+  }
 }

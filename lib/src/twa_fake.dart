@@ -106,4 +106,7 @@ class TwaFake extends TwaInterface {
 
   @override
   void closeScanQrPopup() {}
+
+  @override
+  void shareToStory(String mediaUrl, [StoryShareParams? params]) {}
 }
