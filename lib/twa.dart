@@ -17,6 +17,7 @@ part 'src/models/request_contact_result.dart';
 part 'src/models/request_contact_result_response.dart';
 part 'src/models/request_contact_result_response_unsafe.dart';
 part 'src/models/location_data.dart';
+part 'src/models/story_share_params.dart';
 
 part 'src/services/location_manager.dart';
 part 'src/services/haptic_feedback.dart';

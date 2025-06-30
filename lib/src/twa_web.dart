@@ -214,6 +214,29 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
 
   external JSVoid close();
 
+  @JS('shareToStory')
+  external JSVoid shareToStoryJS(JSString mediaUrl, [JSObject? params]);
+
+  void shareToStory(String mediaUrl, StoryShareParams? params) {
+    return shareToStoryJS(
+      mediaUrl.toJS,
+      switch (params) {
+        StoryShareParams(
+          text: String? text,
+          widgetLink: StoryWidgetLink? widget,
+        ) =>
+          {
+            "text": text,
+            "widget_link":
+                widget != null
+                    ? {"url": widget.url, "name": widget.name}
+                    : null,
+          },
+        _ => null,
+      }?.toJSBox,
+    );
+  }
+
   @JS("shareMessage")
   external JSVoid shareMessageJS(JSString messageId, JSFunction callback);
 
