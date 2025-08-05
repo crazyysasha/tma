@@ -43,6 +43,11 @@ class TwaWeb extends TwaInterface {
   }
 
   @override
+  BackButton get backButton {
+    return telegram.webApp.backButton.toDart;
+  }
+
+  @override
   LocationManager get locationManager {
     return telegram.webApp.locationManager.toDart;
   }
@@ -178,6 +183,9 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
   external SafeAreaInsetJSObject get safeAreaInset;
 
   external SafeAreaInsetJSObject get contentSafeAreaInset;
+
+  @JS('BackButton')
+  external BackButtonJSObject get backButton;
 
   @JS('LocationManager')
   external LocationManagerJSObject get locationManager;
@@ -317,6 +325,42 @@ extension type SafeAreaInsetJSObject._(JSObject _) implements JSObject {
 
   SafeAreaInset get toDart =>
       SafeAreaInset(left: left, top: top, right: right, bottom: bottom);
+}
+
+extension type BackButtonJSObject._(JSObject _) implements JSObject {
+  external bool get isVisible;
+
+  @JS('onClick')
+  external JSVoid onClickJS(JSFunction callback);
+
+  void onClick(void Function() callback) {
+    onClickJS(callback.toJS);
+  }
+
+  @JS('offClick')
+  external JSVoid offClickJS(JSFunction callback);
+
+  void offClick(void Function() callback) {
+    offClickJS(callback.toJS);
+  }
+
+  @JS('hide')
+  external JSVoid hideJS();
+
+  void hide() => hideJS();
+
+  @JS('show')
+  external JSVoid showJS();
+
+  void show() => showJS();
+
+  BackButton get toDart => BackButtonImpl(
+    isVisible: () => isVisible,
+    onClick: onClick,
+    offClick: offClick,
+    hide: hide,
+    show: show,
+  );
 }
 
 extension type HapticFeedbackJSObject._(JSObject _) implements JSObject {

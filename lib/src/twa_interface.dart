@@ -19,6 +19,8 @@ abstract class TwaInterface {
 
   SafeAreaInset get contentSafeAreaInset;
 
+  BackButton get backButton;
+
   LocationManager get locationManager;
 
   HapticFeedback get hapticFeedback;

@@ -21,6 +21,7 @@ part 'src/models/story_share_params.dart';
 
 part 'src/services/location_manager.dart';
 part 'src/services/haptic_feedback.dart';
+part 'src/services/back_button.dart';
 
 final TwaInterface _platform = createTwa();
 
@@ -48,6 +49,9 @@ class Twa extends TwaInterface {
 
   @override
   SafeAreaInset get contentSafeAreaInset => _platform.contentSafeAreaInset;
+
+  @override
+  BackButton get backButton => _platform.backButton;
 
   @override
   LocationManager get locationManager => _platform.locationManager;

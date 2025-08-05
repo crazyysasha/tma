@@ -38,6 +38,15 @@ class TwaFake extends TwaInterface {
       const SafeAreaInset(left: 0, top: 0, right: 0, bottom: 0);
 
   @override
+  BackButton get backButton => BackButtonImpl(
+    isVisible: () => false,
+    onClick: (callback) {},
+    offClick: (callback) {},
+    hide: () {},
+    show: () {},
+  );
+
+  @override
   LocationManager get locationManager => LocationManager(
     isInited: false,
     isLocationAvailable: false,
