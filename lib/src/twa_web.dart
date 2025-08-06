@@ -287,6 +287,7 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
     openTelegramLinkJS(url.toJS, {"force_request": forceRequest.toJS}.toJSBox);
   }
 
+  @JS("openInvoice")
   external JSVoid openInvoiceJS(JSString url, JSFunction callback);
 
   Future<InvoiceStatus> openInvoice(String url) {
