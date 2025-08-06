@@ -127,6 +127,11 @@ class TwaWeb extends TwaInterface {
   }
 
   @override
+  Future<InvoiceStatus> openInvoice(String url) {
+    return telegram.webApp.openInvoice(url);
+  }
+
+  @override
   void showScanQrPopup(String text, [Function(String result)? test]) {
     return telegram.webApp.showScanQrPopup(text, test);
   }
@@ -280,6 +285,28 @@ extension type WebAppJSObject._(JSObject _) implements JSObject {
 
   void openTelegramLink(String url, {bool forceRequest = false}) {
     openTelegramLinkJS(url.toJS, {"force_request": forceRequest.toJS}.toJSBox);
+  }
+
+  external JSVoid openInvoiceJS(JSString url, JSFunction callback);
+
+  Future<InvoiceStatus> openInvoice(String url) {
+    final completer = Completer<InvoiceStatus>();
+    try {
+      openInvoiceJS(
+        url.toJS,
+        (JSString status) {
+          completer.complete(
+            InvoiceStatus.values.firstWhere(
+              (e) => e.name == status.toDart,
+              orElse: () => throw Exception('Unknown invoice status: $status'),
+            ),
+          );
+        }.toJS,
+      );
+    } catch (e) {
+      completer.completeError(e);
+    }
+    return completer.future;
   }
 
   @JS("showScanQrPopup")

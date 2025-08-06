@@ -106,6 +106,11 @@ class TwaFake extends TwaInterface {
   void openTelegramLink(String url, {bool forceRequest = false}) {}
 
   @override
+  Future<InvoiceStatus> openInvoice(String url) {
+    throw UnimplementedError('openInvoice is not implemented in TwaFake');
+  }
+
+  @override
   void showScanQrPopup(String text, [Function(String result)? test]) {}
 
   @override

@@ -53,6 +53,8 @@ abstract class TwaInterface {
 
   void openTelegramLink(String url, {bool forceRequest = false});
 
+  Future<InvoiceStatus> openInvoice(String url);
+
   void showScanQrPopup(String text, [Function(String result)? test]);
 
   void closeScanQrPopup();
