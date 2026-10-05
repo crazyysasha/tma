@@ -1,16 +1,12 @@
-# twa_example
+# tma example
 
-Demonstrates how to use the twa plugin.
+Runs in three modes without code changes:
 
-## Getting Started
+* inside Telegram: full API;
+* in a regular browser (`flutter run -d chrome`): `environment == browser`,
+  `reason == notLaunchedFromTelegram`;
+* on Android/iOS/desktop: `environment == native`.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+To emulate a Telegram launch in a browser, open the page with launch
+parameters in the hash, e.g.
+`http://localhost:8080/#tgWebAppPlatform=weba&tgWebAppVersion=9.6&tgWebAppData=auth_date%3D1%26hash%3Dx`.

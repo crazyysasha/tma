@@ -1,32 +1,7 @@
-part of '../../twa.dart';
+import 'json.dart';
 
-final class LocationData extends Equatable {
-  /// Latitude in degrees.
-  final double latitude;
-
-  /// Longitude in degrees.
-  final double longitude;
-
-  /// Altitude above sea level in meters. null if altitude data is not available on the device.
-  final double? altitude;
-
-  /// The direction the device is moving in degrees (0 = North, 90 = East, 180 = South, 270 = West). null if course data is not available on the device.
-  final double? course;
-
-  /// The speed of the device in m/s. null if speed data is not available on the device.
-  final double? speed;
-
-  /// Accuracy of the latitude and longitude values in meters. null if horizontal accuracy data is not available on the device.
-  final double? horizontalAccuracy;
-
-  /// Accuracy of the altitude value in meters. null if vertical accuracy data is not available on the device.
-  final double? verticalAccuracy;
-
-  /// Accuracy of the course value in degrees. null if course accuracy data is not available on the device.
-  final double? courseAccuracy;
-
-  /// Accuracy of the speed value in m/s. null if speed accuracy data is not available on the device.
-  final double? speedAccuracy;
+/// Result of `LocationManager.getLocation`.
+final class LocationData {
   const LocationData({
     required this.latitude,
     required this.longitude,
@@ -39,16 +14,52 @@ final class LocationData extends Equatable {
     this.speedAccuracy,
   });
 
+  factory LocationData.fromJson(Map<String, Object?> json) => LocationData(
+        latitude: jsonDouble(json['latitude']) ?? 0,
+        longitude: jsonDouble(json['longitude']) ?? 0,
+        altitude: jsonDouble(json['altitude']),
+        course: jsonDouble(json['course']),
+        speed: jsonDouble(json['speed']),
+        horizontalAccuracy: jsonDouble(json['horizontal_accuracy']),
+        verticalAccuracy: jsonDouble(json['vertical_accuracy']),
+        courseAccuracy: jsonDouble(json['course_accuracy']),
+        speedAccuracy: jsonDouble(json['speed_accuracy']),
+      );
+
+  final double latitude;
+  final double longitude;
+
+  /// Meters above sea level.
+  final double? altitude;
+
+  /// Direction of movement in degrees, 0 = north.
+  final double? course;
+
+  /// Meters per second.
+  final double? speed;
+  final double? horizontalAccuracy;
+  final double? verticalAccuracy;
+  final double? courseAccuracy;
+  final double? speedAccuracy;
+
   @override
-  List<String> get props => [
-    "latitude: $latitude",
-    "longitude: $longitude",
-    "altitude: $altitude",
-    "course: $course",
-    "speed: $speed",
-    "horizontalAccuracy: $horizontalAccuracy",
-    "verticalAccuracy: $verticalAccuracy",
-    "courseAccuracy: $courseAccuracy",
-    "speedAccuracy: $speedAccuracy",
-  ];
+  bool operator ==(Object other) =>
+      other is LocationData &&
+      other.latitude == latitude &&
+      other.longitude == longitude &&
+      other.altitude == altitude &&
+      other.course == course &&
+      other.speed == speed &&
+      other.horizontalAccuracy == horizontalAccuracy &&
+      other.verticalAccuracy == verticalAccuracy &&
+      other.courseAccuracy == courseAccuracy &&
+      other.speedAccuracy == speedAccuracy;
+
+  @override
+  int get hashCode => Object.hash(latitude, longitude, altitude, course, speed,
+      horizontalAccuracy, verticalAccuracy, courseAccuracy, speedAccuracy);
+
+  @override
+  String toString() => 'LocationData(lat: $latitude, lng: $longitude, '
+      'accuracy: $horizontalAccuracy)';
 }

@@ -1,11 +1,11 @@
 {
-    "name": "twa_example",
-    "short_name": "twa_example",
+    "name": "tma_example",
+    "short_name": "tma_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Demonstrates how to use the twa plugin.",
+    "description": "Demonstrates how to use the tma plugin.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -1,25 +1,20 @@
-name: twa
-description: "A new Flutter plugin project."
-version: 0.0.1
-homepage:
+name: tma
+description: >-
+  Type-safe Dart/Flutter bindings for the Telegram Mini Apps (Web Apps) API.
+  Detects whether the app runs inside Telegram and degrades gracefully elsewhere.
+version: 1.0.0
+repository: https://github.com/crazyysasha/tma
 
 environment:
   sdk: ^3.7.0
-  flutter: '>=3.3.0'
+  flutter: '>=3.27.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_web_plugins:
-    sdk: flutter
-  web: ^1.0.0
-  plugin_platform_interface: ^2.0.2
-  equatable: ^2.0.7
+  meta: ^1.15.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+  flutter_lints: ^6.0.0
