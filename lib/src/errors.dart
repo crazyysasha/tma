@@ -13,8 +13,10 @@ sealed class TmaException implements Exception {
 /// app is not running inside Telegram (see `Tma.instance.isAvailable`).
 final class TmaUnavailableException extends TmaException {
   const TmaUnavailableException(String method)
-      : super('$method requires the app to run inside Telegram. '
-            'Check Tma.instance.isAvailable before calling it.');
+    : super(
+        '$method requires the app to run inside Telegram. '
+        'Check Tma.instance.isAvailable before calling it.',
+      );
 }
 
 /// Thrown before calling a method that the current Telegram client is too
@@ -25,8 +27,10 @@ final class TmaUnsupportedException extends TmaException {
     required this.method,
     required this.required,
     required this.current,
-  }) : super('$method requires Bot API $required, '
-            'but the client supports only $current.');
+  }) : super(
+         '$method requires Bot API $required, '
+         'but the client supports only $current.',
+       );
 
   final String method;
   final TmaVersion required;

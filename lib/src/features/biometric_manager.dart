@@ -17,9 +17,12 @@ abstract class BiometricManager {
 
   /// Must be called once before any other method.
   Future<void> init();
-  Future<bool> requestAccess([BiometricParams params = const BiometricParams()]);
-  Future<BiometricAuthResult> authenticate(
-      [BiometricParams params = const BiometricParams()]);
+  Future<bool> requestAccess([
+    BiometricParams params = const BiometricParams(),
+  ]);
+  Future<BiometricAuthResult> authenticate([
+    BiometricParams params = const BiometricParams(),
+  ]);
 
   /// Pass an empty string to remove the token.
   Future<bool> updateBiometricToken(String token);

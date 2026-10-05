@@ -79,28 +79,28 @@ final class ThemeParams {
   }
 
   Map<String, String> toJson() => {
-        if (bgColor != null) 'bg_color': toHex(bgColor!),
-        if (textColor != null) 'text_color': toHex(textColor!),
-        if (hintColor != null) 'hint_color': toHex(hintColor!),
-        if (linkColor != null) 'link_color': toHex(linkColor!),
-        if (buttonColor != null) 'button_color': toHex(buttonColor!),
-        if (buttonTextColor != null) 'button_text_color': toHex(buttonTextColor!),
-        if (secondaryBgColor != null)
-          'secondary_bg_color': toHex(secondaryBgColor!),
-        if (headerBgColor != null) 'header_bg_color': toHex(headerBgColor!),
-        if (bottomBarBgColor != null)
-          'bottom_bar_bg_color': toHex(bottomBarBgColor!),
-        if (accentTextColor != null) 'accent_text_color': toHex(accentTextColor!),
-        if (sectionBgColor != null) 'section_bg_color': toHex(sectionBgColor!),
-        if (sectionHeaderTextColor != null)
-          'section_header_text_color': toHex(sectionHeaderTextColor!),
-        if (sectionSeparatorColor != null)
-          'section_separator_color': toHex(sectionSeparatorColor!),
-        if (subtitleTextColor != null)
-          'subtitle_text_color': toHex(subtitleTextColor!),
-        if (destructiveTextColor != null)
-          'destructive_text_color': toHex(destructiveTextColor!),
-      };
+    if (bgColor != null) 'bg_color': toHex(bgColor!),
+    if (textColor != null) 'text_color': toHex(textColor!),
+    if (hintColor != null) 'hint_color': toHex(hintColor!),
+    if (linkColor != null) 'link_color': toHex(linkColor!),
+    if (buttonColor != null) 'button_color': toHex(buttonColor!),
+    if (buttonTextColor != null) 'button_text_color': toHex(buttonTextColor!),
+    if (secondaryBgColor != null)
+      'secondary_bg_color': toHex(secondaryBgColor!),
+    if (headerBgColor != null) 'header_bg_color': toHex(headerBgColor!),
+    if (bottomBarBgColor != null)
+      'bottom_bar_bg_color': toHex(bottomBarBgColor!),
+    if (accentTextColor != null) 'accent_text_color': toHex(accentTextColor!),
+    if (sectionBgColor != null) 'section_bg_color': toHex(sectionBgColor!),
+    if (sectionHeaderTextColor != null)
+      'section_header_text_color': toHex(sectionHeaderTextColor!),
+    if (sectionSeparatorColor != null)
+      'section_separator_color': toHex(sectionSeparatorColor!),
+    if (subtitleTextColor != null)
+      'subtitle_text_color': toHex(subtitleTextColor!),
+    if (destructiveTextColor != null)
+      'destructive_text_color': toHex(destructiveTextColor!),
+  };
 
   @override
   bool operator ==(Object other) =>

@@ -12,11 +12,11 @@ final class SafeAreaInset {
   });
 
   factory SafeAreaInset.fromJson(Map<String, Object?> json) => SafeAreaInset(
-        top: jsonDouble(json['top']) ?? 0,
-        bottom: jsonDouble(json['bottom']) ?? 0,
-        left: jsonDouble(json['left']) ?? 0,
-        right: jsonDouble(json['right']) ?? 0,
-      );
+    top: jsonDouble(json['top']) ?? 0,
+    bottom: jsonDouble(json['bottom']) ?? 0,
+    left: jsonDouble(json['left']) ?? 0,
+    right: jsonDouble(json['right']) ?? 0,
+  );
 
   static const zero = SafeAreaInset();
 
@@ -29,11 +29,11 @@ final class SafeAreaInset {
       EdgeInsets.only(top: top, bottom: bottom, left: left, right: right);
 
   SafeAreaInset operator +(SafeAreaInset other) => SafeAreaInset(
-        top: top + other.top,
-        bottom: bottom + other.bottom,
-        left: left + other.left,
-        right: right + other.right,
-      );
+    top: top + other.top,
+    bottom: bottom + other.bottom,
+    left: left + other.left,
+    right: right + other.right,
+  );
 
   @override
   bool operator ==(Object other) =>

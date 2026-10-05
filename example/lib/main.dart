@@ -27,9 +27,10 @@ class ExampleApp extends StatelessWidget {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
               seedColor: tp.buttonColor ?? Colors.blue,
-              brightness: tma.colorScheme == TmaColorScheme.dark
-                  ? Brightness.dark
-                  : Brightness.light,
+              brightness:
+                  tma.colorScheme == TmaColorScheme.dark
+                      ? Brightness.dark
+                      : Brightness.light,
             ),
             scaffoldBackgroundColor: tp.bgColor,
             visualDensity: VisualDensity.compact,
@@ -61,8 +62,9 @@ class _DemoPageState extends State<DemoPage> {
   final invoiceUrl = TextEditingController(text: 'https://t.me/\$invoice_slug');
   final preparedMsgId = TextEditingController();
   final emojiId = TextEditingController(text: '5368324170671202286');
-  final mediaUrl =
-      TextEditingController(text: 'https://telegram.org/img/t_logo.png');
+  final mediaUrl = TextEditingController(
+    text: 'https://telegram.org/img/t_logo.png',
+  );
   final inlineQuery = TextEditingController(text: 'hello');
   final sendDataText = TextEditingController(text: '{"action":"demo"}');
   final biometricToken = TextEditingController(text: 'token-123');
@@ -121,19 +123,28 @@ class _DemoPageState extends State<DemoPage> {
 
   void _subscribeToEverything() {
     final e = tma.events;
-    void on<T>(String name, Stream<T> stream,
-        [String Function(T value)? format]) {
-      subs.add(stream.listen((v) {
-        _log('event $name${format == null ? '' : ': ${format(v)}'}');
-        // Properties shown in the UI may have changed.
-        if (mounted) setState(() {});
-      }));
+    void on<T>(
+      String name,
+      Stream<T> stream, [
+      String Function(T value)? format,
+    ]) {
+      subs.add(
+        stream.listen((v) {
+          _log('event $name${format == null ? '' : ': ${format(v)}'}');
+          // Properties shown in the UI may have changed.
+          if (mounted) setState(() {});
+        }),
+      );
     }
 
     on('activated', e.activated);
     on('deactivated', e.deactivated);
     on('themeChanged', e.themeChanged);
-    on('viewportChanged', e.viewportChanged, (v) => 'stable=${v.isStateStable}');
+    on(
+      'viewportChanged',
+      e.viewportChanged,
+      (v) => 'stable=${v.isStateStable}',
+    );
     on('safeAreaChanged', e.safeAreaChanged);
     on('contentSafeAreaChanged', e.contentSafeAreaChanged);
     on('mainButtonClicked', e.mainButtonClicked);
@@ -145,7 +156,11 @@ class _DemoPageState extends State<DemoPage> {
     on('qrTextReceived', e.qrTextReceived, (v) => v.data);
     on('scanQrPopupClosed', e.scanQrPopupClosed);
     on('clipboardTextReceived', e.clipboardTextReceived, (v) => '${v.data}');
-    on('writeAccessRequested', e.writeAccessRequested, (v) => 'allowed=${v.allowed}');
+    on(
+      'writeAccessRequested',
+      e.writeAccessRequested,
+      (v) => 'allowed=${v.allowed}',
+    );
     on('contactRequested', e.contactRequested);
     on('fullscreenChanged', e.fullscreenChanged);
     on('fullscreenFailed', e.fullscreenFailed, (v) => v.error);
@@ -156,13 +171,24 @@ class _DemoPageState extends State<DemoPage> {
     on('emojiStatusAccessRequested', e.emojiStatusAccessRequested);
     on('shareMessageSent', e.shareMessageSent);
     on('shareMessageFailed', e.shareMessageFailed, (v) => v.error);
-    on('fileDownloadRequested', e.fileDownloadRequested, (v) => 'accepted=${v.accepted}');
+    on(
+      'fileDownloadRequested',
+      e.fileDownloadRequested,
+      (v) => 'accepted=${v.accepted}',
+    );
     on('locationManagerUpdated', e.locationManagerUpdated);
     on('locationRequested', e.locationRequested);
     on('biometricManagerUpdated', e.biometricManagerUpdated);
-    on('biometricAuthRequested', e.biometricAuthRequested,
-        (v) => 'auth=${v.isAuthenticated} token=${v.token}');
-    on('biometricTokenUpdated', e.biometricTokenUpdated, (v) => 'updated=${v.isUpdated}');
+    on(
+      'biometricAuthRequested',
+      e.biometricAuthRequested,
+      (v) => 'auth=${v.isAuthenticated} token=${v.token}',
+    );
+    on(
+      'biometricTokenUpdated',
+      e.biometricTokenUpdated,
+      (v) => 'updated=${v.isUpdated}',
+    );
     on('requestedChatSent', e.requestedChatSent);
     on('requestedChatFailed', e.requestedChatFailed, (v) => v.error);
   }
@@ -252,9 +278,7 @@ class _DemoPageState extends State<DemoPage> {
           'backgroundColor': tma.backgroundColor,
           'bottomBarColor': tma.bottomBarColor,
         }),
-        _Buttons([
-          _Btn('Refresh', () => setState(() {})),
-        ]),
+        _Buttons([_Btn('Refresh', () => setState(() {}))]),
       ],
     );
   }
@@ -330,24 +354,96 @@ class _DemoPageState extends State<DemoPage> {
       children: [
         _Field(headerHex, 'Custom color (#rrggbb)'),
         _Buttons([
-          _Btn('Header: bg', () => _run('setHeaderColor', () => tma.setHeaderColor(const HeaderColor.bg()))),
-          _Btn('Header: secondaryBg', () => _run('setHeaderColor', () => tma.setHeaderColor(const HeaderColor.secondaryBg()))),
-          _Btn('Header: custom', () => _run('setHeaderColor', () => tma.setHeaderColor(HeaderColor.custom(_customColor())))),
-          _Btn('Background: bg', () => _run('setBackgroundColor', () => tma.setBackgroundColor(const BarColor.bg()))),
-          _Btn('Background: custom', () => _run('setBackgroundColor', () => tma.setBackgroundColor(BarColor.custom(_customColor())))),
-          _Btn('Bottom bar: bottomBarBg', () => _run('setBottomBarColor', () => tma.setBottomBarColor(const BarColor.bottomBarBg()))),
-          _Btn('Bottom bar: custom', () => _run('setBottomBarColor', () => tma.setBottomBarColor(BarColor.custom(_customColor())))),
+          _Btn(
+            'Header: bg',
+            () => _run(
+              'setHeaderColor',
+              () => tma.setHeaderColor(const HeaderColor.bg()),
+            ),
+          ),
+          _Btn(
+            'Header: secondaryBg',
+            () => _run(
+              'setHeaderColor',
+              () => tma.setHeaderColor(const HeaderColor.secondaryBg()),
+            ),
+          ),
+          _Btn(
+            'Header: custom',
+            () => _run(
+              'setHeaderColor',
+              () => tma.setHeaderColor(HeaderColor.custom(_customColor())),
+            ),
+          ),
+          _Btn(
+            'Background: bg',
+            () => _run(
+              'setBackgroundColor',
+              () => tma.setBackgroundColor(const BarColor.bg()),
+            ),
+          ),
+          _Btn(
+            'Background: custom',
+            () => _run(
+              'setBackgroundColor',
+              () => tma.setBackgroundColor(BarColor.custom(_customColor())),
+            ),
+          ),
+          _Btn(
+            'Bottom bar: bottomBarBg',
+            () => _run(
+              'setBottomBarColor',
+              () => tma.setBottomBarColor(const BarColor.bottomBarBg()),
+            ),
+          ),
+          _Btn(
+            'Bottom bar: custom',
+            () => _run(
+              'setBottomBarColor',
+              () => tma.setBottomBarColor(BarColor.custom(_customColor())),
+            ),
+          ),
         ]),
         const Divider(),
         _Buttons([
-          _Btn('requestFullscreen', () => _run('requestFullscreen', tma.requestFullscreen)),
-          _Btn('exitFullscreen', () => _run('exitFullscreen', tma.exitFullscreen)),
-          _Btn('lockOrientation', () => _run('lockOrientation', tma.lockOrientation)),
-          _Btn('unlockOrientation', () => _run('unlockOrientation', tma.unlockOrientation)),
-          _Btn('enableClosingConfirmation', () => _run('enableClosingConfirmation', tma.enableClosingConfirmation)),
-          _Btn('disableClosingConfirmation', () => _run('disableClosingConfirmation', tma.disableClosingConfirmation)),
-          _Btn('enableVerticalSwipes', () => _run('enableVerticalSwipes', tma.enableVerticalSwipes)),
-          _Btn('disableVerticalSwipes', () => _run('disableVerticalSwipes', tma.disableVerticalSwipes)),
+          _Btn(
+            'requestFullscreen',
+            () => _run('requestFullscreen', tma.requestFullscreen),
+          ),
+          _Btn(
+            'exitFullscreen',
+            () => _run('exitFullscreen', tma.exitFullscreen),
+          ),
+          _Btn(
+            'lockOrientation',
+            () => _run('lockOrientation', tma.lockOrientation),
+          ),
+          _Btn(
+            'unlockOrientation',
+            () => _run('unlockOrientation', tma.unlockOrientation),
+          ),
+          _Btn(
+            'enableClosingConfirmation',
+            () => _run(
+              'enableClosingConfirmation',
+              tma.enableClosingConfirmation,
+            ),
+          ),
+          _Btn(
+            'disableClosingConfirmation',
+            () => _run(
+              'disableClosingConfirmation',
+              tma.disableClosingConfirmation,
+            ),
+          ),
+          _Btn(
+            'enableVerticalSwipes',
+            () => _run('enableVerticalSwipes', tma.enableVerticalSwipes),
+          ),
+          _Btn(
+            'disableVerticalSwipes',
+            () => _run('disableVerticalSwipes', tma.disableVerticalSwipes),
+          ),
         ]),
       ],
     );
@@ -364,10 +460,22 @@ class _DemoPageState extends State<DemoPage> {
           _Btn('ready', () => _run('ready', tma.ready)),
           _Btn('expand', () => _run('expand', tma.expand)),
           _Btn('hideKeyboard', () => _run('hideKeyboard', tma.hideKeyboard)),
-          _Btn('addToHomeScreen', () => _run('addToHomeScreen', tma.addToHomeScreen)),
-          _Btn('checkHomeScreenStatus', () => _run('checkHomeScreenStatus', () async => (await tma.checkHomeScreenStatus()).name)),
+          _Btn(
+            'addToHomeScreen',
+            () => _run('addToHomeScreen', tma.addToHomeScreen),
+          ),
+          _Btn(
+            'checkHomeScreenStatus',
+            () => _run(
+              'checkHomeScreenStatus',
+              () async => (await tma.checkHomeScreenStatus()).name,
+            ),
+          ),
           _Btn('close', () => _run('close', tma.close)),
-          _Btn('close(returnBack)', () => _run('close(returnBack)', () => tma.close(returnBack: true))),
+          _Btn(
+            'close(returnBack)',
+            () => _run('close(returnBack)', () => tma.close(returnBack: true)),
+          ),
         ]),
       ],
     );
@@ -388,8 +496,14 @@ class _DemoPageState extends State<DemoPage> {
         const _SubTitle('SettingsButton'),
         _Props({'isVisible': tma.settingsButton.isVisible}),
         _Buttons([
-          _Btn('show', () => _run('settingsButton.show', tma.settingsButton.show)),
-          _Btn('hide', () => _run('settingsButton.hide', tma.settingsButton.hide)),
+          _Btn(
+            'show',
+            () => _run('settingsButton.show', tma.settingsButton.show),
+          ),
+          _Btn(
+            'hide',
+            () => _run('settingsButton.hide', tma.settingsButton.hide),
+          ),
         ]),
         const _SubTitle('MainButton'),
         _Props({
@@ -414,14 +528,23 @@ class _DemoPageState extends State<DemoPage> {
         _bottomButtonControls('secondaryButton', sb, secondaryButtonText),
         _Buttons([
           for (final p in SecondaryButtonPosition.values)
-            _Btn('position: ${p.name}', () => _run('secondaryButton.setParams', () => sb.setParams(BottomButtonParams(position: p)))),
+            _Btn(
+              'position: ${p.name}',
+              () => _run(
+                'secondaryButton.setParams',
+                () => sb.setParams(BottomButtonParams(position: p)),
+              ),
+            ),
         ]),
       ],
     );
   }
 
   Widget _bottomButtonControls(
-      String name, BottomButton b, TextEditingController text) {
+    String name,
+    BottomButton b,
+    TextEditingController text,
+  ) {
     return _Buttons([
       _Btn('setText', () => _run('$name.setText', () => b.setText(text.text))),
       _Btn('show', () => _run('$name.show', b.show)),
@@ -429,16 +552,28 @@ class _DemoPageState extends State<DemoPage> {
       _Btn('enable', () => _run('$name.enable', b.enable)),
       _Btn('disable', () => _run('$name.disable', b.disable)),
       _Btn('showProgress', () => _run('$name.showProgress', b.showProgress)),
-      _Btn('showProgress(leaveActive)', () => _run('$name.showProgress', () => b.showProgress(leaveActive: true))),
+      _Btn(
+        'showProgress(leaveActive)',
+        () =>
+            _run('$name.showProgress', () => b.showProgress(leaveActive: true)),
+      ),
       _Btn('hideProgress', () => _run('$name.hideProgress', b.hideProgress)),
-      _Btn('setParams (green, shine)', () => _run('$name.setParams', () => b.setParams(BottomButtonParams(
-            text: text.text,
-            color: const Color(0xFF2E7D32),
-            textColor: Colors.white,
-            hasShineEffect: true,
-            isActive: true,
-            isVisible: true,
-          )))),
+      _Btn(
+        'setParams (green, shine)',
+        () => _run(
+          '$name.setParams',
+          () => b.setParams(
+            BottomButtonParams(
+              text: text.text,
+              color: const Color(0xFF2E7D32),
+              textColor: Colors.white,
+              hasShineEffect: true,
+              isActive: true,
+              isVisible: true,
+            ),
+          ),
+        ),
+      ),
     ]);
   }
 
@@ -449,10 +584,20 @@ class _DemoPageState extends State<DemoPage> {
       children: [
         _Buttons([
           for (final s in HapticImpactStyle.values)
-            _Btn('impact ${s.name}', () => _run('impactOccurred', () => h.impactOccurred(s))),
+            _Btn(
+              'impact ${s.name}',
+              () => _run('impactOccurred', () => h.impactOccurred(s)),
+            ),
           for (final t in HapticNotificationType.values)
-            _Btn('notification ${t.name}', () => _run('notificationOccurred', () => h.notificationOccurred(t))),
-          _Btn('selectionChanged', () => _run('selectionChanged', h.selectionChanged)),
+            _Btn(
+              'notification ${t.name}',
+              () =>
+                  _run('notificationOccurred', () => h.notificationOccurred(t)),
+            ),
+          _Btn(
+            'selectionChanged',
+            () => _run('selectionChanged', h.selectionChanged),
+          ),
         ]),
       ],
     );
@@ -463,20 +608,47 @@ class _DemoPageState extends State<DemoPage> {
       title: 'Dialogs, QR, clipboard',
       children: [
         _Buttons([
-          _Btn('showPopup', () => _run('showPopup', () => tma.showPopup(const PopupParams(
-                title: 'Popup',
-                message: 'Pick a button',
-                buttons: [
-                  PopupButton(id: 'ok', type: PopupButtonType.ok),
-                  PopupButton(id: 'custom', text: 'Custom'),
-                  PopupButton(id: 'del', type: PopupButtonType.destructive, text: 'Delete'),
-                ],
-              )))),
-          _Btn('showAlert', () => _run('showAlert', () => tma.showAlert('This is an alert'))),
-          _Btn('showConfirm', () => _run('showConfirm', () => tma.showConfirm('Are you sure?'))),
-          _Btn('scanQr', () => _run('scanQr', () => tma.scanQr(text: 'Scan any code'))),
-          _Btn('closeScanQrPopup', () => _run('closeScanQrPopup', tma.closeScanQrPopup)),
-          _Btn('readTextFromClipboard', () => _run('readTextFromClipboard', tma.readTextFromClipboard)),
+          _Btn(
+            'showPopup',
+            () => _run(
+              'showPopup',
+              () => tma.showPopup(
+                const PopupParams(
+                  title: 'Popup',
+                  message: 'Pick a button',
+                  buttons: [
+                    PopupButton(id: 'ok', type: PopupButtonType.ok),
+                    PopupButton(id: 'custom', text: 'Custom'),
+                    PopupButton(
+                      id: 'del',
+                      type: PopupButtonType.destructive,
+                      text: 'Delete',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          _Btn(
+            'showAlert',
+            () => _run('showAlert', () => tma.showAlert('This is an alert')),
+          ),
+          _Btn(
+            'showConfirm',
+            () => _run('showConfirm', () => tma.showConfirm('Are you sure?')),
+          ),
+          _Btn(
+            'scanQr',
+            () => _run('scanQr', () => tma.scanQr(text: 'Scan any code')),
+          ),
+          _Btn(
+            'closeScanQrPopup',
+            () => _run('closeScanQrPopup', tma.closeScanQrPopup),
+          ),
+          _Btn(
+            'readTextFromClipboard',
+            () => _run('readTextFromClipboard', tma.readTextFromClipboard),
+          ),
         ]),
       ],
     );
@@ -487,13 +659,26 @@ class _DemoPageState extends State<DemoPage> {
       title: 'Permissions and requests',
       children: [
         _Buttons([
-          _Btn('requestWriteAccess', () => _run('requestWriteAccess', tma.requestWriteAccess)),
-          _Btn('requestContact', () => _run('requestContact', () async {
-                final r = await tma.requestContact();
-                return '${r.status.name} ${r.data?.contact} raw=${_short(r.data?.raw)}';
-              })),
-          _Btn('requestChat(1)', () => _run('requestChat', () => tma.requestChat(1))),
-          _Btn('requestEmojiStatusAccess', () => _run('requestEmojiStatusAccess', tma.requestEmojiStatusAccess)),
+          _Btn(
+            'requestWriteAccess',
+            () => _run('requestWriteAccess', tma.requestWriteAccess),
+          ),
+          _Btn(
+            'requestContact',
+            () => _run('requestContact', () async {
+              final r = await tma.requestContact();
+              return '${r.status.name} ${r.data?.contact} raw=${_short(r.data?.raw)}';
+            }),
+          ),
+          _Btn(
+            'requestChat(1)',
+            () => _run('requestChat', () => tma.requestChat(1)),
+          ),
+          _Btn(
+            'requestEmojiStatusAccess',
+            () =>
+                _run('requestEmojiStatusAccess', tma.requestEmojiStatusAccess),
+          ),
         ]),
       ],
     );
@@ -505,30 +690,81 @@ class _DemoPageState extends State<DemoPage> {
       children: [
         _Field(url, 'External URL'),
         _Buttons([
-          _Btn('openLink', () => _run('openLink', () => tma.openLink(url.text))),
-          _Btn('openLink(instantView)', () => _run('openLink', () => tma.openLink(url.text, tryInstantView: true))),
-          _Btn('openLink(browser)', () => _run('openLink', () => tma.openLink(url.text, tryBrowser: true))),
+          _Btn(
+            'openLink',
+            () => _run('openLink', () => tma.openLink(url.text)),
+          ),
+          _Btn(
+            'openLink(instantView)',
+            () => _run(
+              'openLink',
+              () => tma.openLink(url.text, tryInstantView: true),
+            ),
+          ),
+          _Btn(
+            'openLink(browser)',
+            () => _run(
+              'openLink',
+              () => tma.openLink(url.text, tryBrowser: true),
+            ),
+          ),
         ]),
         _Field(tgLink, 't.me link'),
         _Buttons([
-          _Btn('openTelegramLink', () => _run('openTelegramLink', () => tma.openTelegramLink(tgLink.text))),
-          _Btn('openTelegramLink(forceRequest)', () => _run('openTelegramLink', () => tma.openTelegramLink(tgLink.text, forceRequest: true))),
+          _Btn(
+            'openTelegramLink',
+            () => _run(
+              'openTelegramLink',
+              () => tma.openTelegramLink(tgLink.text),
+            ),
+          ),
+          _Btn(
+            'openTelegramLink(forceRequest)',
+            () => _run(
+              'openTelegramLink',
+              () => tma.openTelegramLink(tgLink.text, forceRequest: true),
+            ),
+          ),
         ]),
         _Field(invoiceUrl, 'Invoice URL (https://t.me/\$slug)'),
         _Buttons([
-          _Btn('openInvoice', () => _run('openInvoice', () async => (await tma.openInvoice(invoiceUrl.text)).name)),
+          _Btn(
+            'openInvoice',
+            () => _run(
+              'openInvoice',
+              () async => (await tma.openInvoice(invoiceUrl.text)).name,
+            ),
+          ),
         ]),
         _Field(sendDataText, 'sendData payload (keyboard-button apps only)'),
         _Buttons([
-          _Btn('sendData', () => _run('sendData', () => tma.sendData(sendDataText.text))),
+          _Btn(
+            'sendData',
+            () => _run('sendData', () => tma.sendData(sendDataText.text)),
+          ),
         ]),
         _Field(inlineQuery, 'Inline query'),
         _Buttons([
-          _Btn('switchInlineQuery', () => _run('switchInlineQuery', () => tma.switchInlineQuery(inlineQuery.text))),
-          _Btn('switchInlineQuery(users, groups)', () => _run('switchInlineQuery', () => tma.switchInlineQuery(
+          _Btn(
+            'switchInlineQuery',
+            () => _run(
+              'switchInlineQuery',
+              () => tma.switchInlineQuery(inlineQuery.text),
+            ),
+          ),
+          _Btn(
+            'switchInlineQuery(users, groups)',
+            () => _run(
+              'switchInlineQuery',
+              () => tma.switchInlineQuery(
                 inlineQuery.text,
-                chooseChatTypes: const [ChooseChatType.users, ChooseChatType.groups],
-              ))),
+                chooseChatTypes: const [
+                  ChooseChatType.users,
+                  ChooseChatType.groups,
+                ],
+              ),
+            ),
+          ),
         ]),
       ],
     );
@@ -540,32 +776,68 @@ class _DemoPageState extends State<DemoPage> {
       children: [
         _Field(mediaUrl, 'Story media URL'),
         _Buttons([
-          _Btn('shareToStory', () => _run('shareToStory', () => tma.shareToStory(mediaUrl.text))),
-          _Btn('shareToStory(text, widget)', () => _run('shareToStory', () => tma.shareToStory(
+          _Btn(
+            'shareToStory',
+            () => _run('shareToStory', () => tma.shareToStory(mediaUrl.text)),
+          ),
+          _Btn(
+            'shareToStory(text, widget)',
+            () => _run(
+              'shareToStory',
+              () => tma.shareToStory(
                 mediaUrl.text,
                 const StoryShareParams(
                   text: 'Shared from the tma example',
-                  widgetLink: StoryWidgetLink(url: 'https://t.me/telegram', name: 'Telegram'),
+                  widgetLink: StoryWidgetLink(
+                    url: 'https://t.me/telegram',
+                    name: 'Telegram',
+                  ),
                 ),
-              ))),
+              ),
+            ),
+          ),
         ]),
-        _Field(preparedMsgId, 'Prepared message id (savePreparedInlineMessage)'),
+        _Field(
+          preparedMsgId,
+          'Prepared message id (savePreparedInlineMessage)',
+        ),
         _Buttons([
-          _Btn('shareMessage', () => _run('shareMessage', () => tma.shareMessage(preparedMsgId.text))),
+          _Btn(
+            'shareMessage',
+            () => _run(
+              'shareMessage',
+              () => tma.shareMessage(preparedMsgId.text),
+            ),
+          ),
         ]),
         _Field(emojiId, 'Custom emoji id'),
         _Buttons([
-          _Btn('setEmojiStatus', () => _run('setEmojiStatus', () => tma.setEmojiStatus(emojiId.text))),
-          _Btn('setEmojiStatus(1h)', () => _run('setEmojiStatus', () => tma.setEmojiStatus(
+          _Btn(
+            'setEmojiStatus',
+            () =>
+                _run('setEmojiStatus', () => tma.setEmojiStatus(emojiId.text)),
+          ),
+          _Btn(
+            'setEmojiStatus(1h)',
+            () => _run(
+              'setEmojiStatus',
+              () => tma.setEmojiStatus(
                 emojiId.text,
                 const EmojiStatusParams(duration: Duration(hours: 1)),
-              ))),
+              ),
+            ),
+          ),
         ]),
         _Buttons([
-          _Btn('downloadFile', () => _run('downloadFile', () => tma.downloadFile(DownloadFileParams(
-                url: mediaUrl.text,
-                fileName: 'logo.png',
-              )))),
+          _Btn(
+            'downloadFile',
+            () => _run(
+              'downloadFile',
+              () => tma.downloadFile(
+                DownloadFileParams(url: mediaUrl.text, fileName: 'logo.png'),
+              ),
+            ),
+          ),
         ]),
       ],
     );
@@ -579,12 +851,36 @@ class _DemoPageState extends State<DemoPage> {
         _Field(storageKey, 'Key'),
         _Field(storageValue, 'Value'),
         _Buttons([
-          _Btn('setItem', () => _run('cloud.setItem', () => s.setItem(storageKey.text, storageValue.text))),
-          _Btn('getItem', () => _run('cloud.getItem', () => s.getItem(storageKey.text))),
-          _Btn('getItems([key, other])', () => _run('cloud.getItems', () => s.getItems([storageKey.text, 'other']))),
+          _Btn(
+            'setItem',
+            () => _run(
+              'cloud.setItem',
+              () => s.setItem(storageKey.text, storageValue.text),
+            ),
+          ),
+          _Btn(
+            'getItem',
+            () => _run('cloud.getItem', () => s.getItem(storageKey.text)),
+          ),
+          _Btn(
+            'getItems([key, other])',
+            () => _run(
+              'cloud.getItems',
+              () => s.getItems([storageKey.text, 'other']),
+            ),
+          ),
           _Btn('getKeys', () => _run('cloud.getKeys', s.getKeys)),
-          _Btn('removeItem', () => _run('cloud.removeItem', () => s.removeItem(storageKey.text))),
-          _Btn('removeItems([key, other])', () => _run('cloud.removeItems', () => s.removeItems([storageKey.text, 'other']))),
+          _Btn(
+            'removeItem',
+            () => _run('cloud.removeItem', () => s.removeItem(storageKey.text)),
+          ),
+          _Btn(
+            'removeItems([key, other])',
+            () => _run(
+              'cloud.removeItems',
+              () => s.removeItems([storageKey.text, 'other']),
+            ),
+          ),
         ]),
       ],
     );
@@ -597,9 +893,22 @@ class _DemoPageState extends State<DemoPage> {
       children: [
         const Text('Uses the same key/value fields as CloudStorage.'),
         _Buttons([
-          _Btn('setItem', () => _run('device.setItem', () => s.setItem(storageKey.text, storageValue.text))),
-          _Btn('getItem', () => _run('device.getItem', () => s.getItem(storageKey.text))),
-          _Btn('removeItem', () => _run('device.removeItem', () => s.removeItem(storageKey.text))),
+          _Btn(
+            'setItem',
+            () => _run(
+              'device.setItem',
+              () => s.setItem(storageKey.text, storageValue.text),
+            ),
+          ),
+          _Btn(
+            'getItem',
+            () => _run('device.getItem', () => s.getItem(storageKey.text)),
+          ),
+          _Btn(
+            'removeItem',
+            () =>
+                _run('device.removeItem', () => s.removeItem(storageKey.text)),
+          ),
           _Btn('clear', () => _run('device.clear', s.clear)),
         ]),
       ],
@@ -613,13 +922,32 @@ class _DemoPageState extends State<DemoPage> {
       children: [
         const Text('Uses the same key/value fields as CloudStorage.'),
         _Buttons([
-          _Btn('setItem', () => _run('secure.setItem', () => s.setItem(storageKey.text, storageValue.text))),
-          _Btn('getItem', () => _run('secure.getItem', () async {
-                final item = await s.getItem(storageKey.text);
-                return 'value=${item.value} canRestore=${item.canRestore}';
-              })),
-          _Btn('restoreItem', () => _run('secure.restoreItem', () => s.restoreItem(storageKey.text))),
-          _Btn('removeItem', () => _run('secure.removeItem', () => s.removeItem(storageKey.text))),
+          _Btn(
+            'setItem',
+            () => _run(
+              'secure.setItem',
+              () => s.setItem(storageKey.text, storageValue.text),
+            ),
+          ),
+          _Btn(
+            'getItem',
+            () => _run('secure.getItem', () async {
+              final item = await s.getItem(storageKey.text);
+              return 'value=${item.value} canRestore=${item.canRestore}';
+            }),
+          ),
+          _Btn(
+            'restoreItem',
+            () => _run(
+              'secure.restoreItem',
+              () => s.restoreItem(storageKey.text),
+            ),
+          ),
+          _Btn(
+            'removeItem',
+            () =>
+                _run('secure.removeItem', () => s.removeItem(storageKey.text)),
+          ),
           _Btn('clear', () => _run('secure.clear', s.clear)),
         ]),
       ],
@@ -643,14 +971,42 @@ class _DemoPageState extends State<DemoPage> {
         _Field(biometricToken, 'Token to store'),
         _Buttons([
           _Btn('init', () => _run('biometric.init', b.init)),
-          _Btn('requestAccess', () => _run('biometric.requestAccess', () => b.requestAccess(const BiometricParams(reason: 'Demo needs biometrics')))),
-          _Btn('authenticate', () => _run('biometric.authenticate', () async {
-                final r = await b.authenticate(const BiometricParams(reason: 'Confirm it is you'));
-                return 'authenticated=${r.isAuthenticated} token=${r.token}';
-              })),
-          _Btn('updateBiometricToken', () => _run('biometric.updateBiometricToken', () => b.updateBiometricToken(biometricToken.text))),
-          _Btn('remove token', () => _run('biometric.updateBiometricToken', () => b.updateBiometricToken(''))),
-          _Btn('openSettings', () => _run('biometric.openSettings', b.openSettings)),
+          _Btn(
+            'requestAccess',
+            () => _run(
+              'biometric.requestAccess',
+              () => b.requestAccess(
+                const BiometricParams(reason: 'Demo needs biometrics'),
+              ),
+            ),
+          ),
+          _Btn(
+            'authenticate',
+            () => _run('biometric.authenticate', () async {
+              final r = await b.authenticate(
+                const BiometricParams(reason: 'Confirm it is you'),
+              );
+              return 'authenticated=${r.isAuthenticated} token=${r.token}';
+            }),
+          ),
+          _Btn(
+            'updateBiometricToken',
+            () => _run(
+              'biometric.updateBiometricToken',
+              () => b.updateBiometricToken(biometricToken.text),
+            ),
+          ),
+          _Btn(
+            'remove token',
+            () => _run(
+              'biometric.updateBiometricToken',
+              () => b.updateBiometricToken(''),
+            ),
+          ),
+          _Btn(
+            'openSettings',
+            () => _run('biometric.openSettings', b.openSettings),
+          ),
         ]),
       ],
     );
@@ -669,8 +1025,14 @@ class _DemoPageState extends State<DemoPage> {
         }),
         _Buttons([
           _Btn('init', () => _run('location.init', l.init)),
-          _Btn('getLocation', () => _run('location.getLocation', l.getLocation)),
-          _Btn('openSettings', () => _run('location.openSettings', l.openSettings)),
+          _Btn(
+            'getLocation',
+            () => _run('location.getLocation', l.getLocation),
+          ),
+          _Btn(
+            'openSettings',
+            () => _run('location.openSettings', l.openSettings),
+          ),
         ]),
       ],
     );
@@ -685,17 +1047,34 @@ class _DemoPageState extends State<DemoPage> {
         const _SubTitle('DeviceOrientation'),
         StreamBuilder<OrientationData>(
           stream: tma.deviceOrientation.onChanged,
-          builder: (_, snap) => _Props({
-            'isStarted': tma.deviceOrientation.isStarted,
-            'value': snap.data ?? tma.deviceOrientation.value,
-          }),
+          builder:
+              (_, snap) => _Props({
+                'isStarted': tma.deviceOrientation.isStarted,
+                'value': snap.data ?? tma.deviceOrientation.value,
+              }),
         ),
         _Buttons([
-          _Btn('start', () => _run('orientation.start', () => tma.deviceOrientation.start())),
-          _Btn('start(absolute, 100ms)', () => _run('orientation.start', () => tma.deviceOrientation.start(
-                const DeviceOrientationParams(needAbsolute: true, refreshRate: Duration(milliseconds: 100)),
-              ))),
-          _Btn('stop', () => _run('orientation.stop', tma.deviceOrientation.stop)),
+          _Btn(
+            'start',
+            () =>
+                _run('orientation.start', () => tma.deviceOrientation.start()),
+          ),
+          _Btn(
+            'start(absolute, 100ms)',
+            () => _run(
+              'orientation.start',
+              () => tma.deviceOrientation.start(
+                const DeviceOrientationParams(
+                  needAbsolute: true,
+                  refreshRate: Duration(milliseconds: 100),
+                ),
+              ),
+            ),
+          ),
+          _Btn(
+            'stop',
+            () => _run('orientation.stop', tma.deviceOrientation.stop),
+          ),
         ]),
       ],
     );
@@ -708,14 +1087,23 @@ class _DemoPageState extends State<DemoPage> {
         _SubTitle(name),
         StreamBuilder<Vector3>(
           stream: s.onChanged,
-          builder: (_, snap) => _Props({
-            'isStarted': s.isStarted,
-            'value': snap.data ?? s.value,
-          }),
+          builder:
+              (_, snap) => _Props({
+                'isStarted': s.isStarted,
+                'value': snap.data ?? s.value,
+              }),
         ),
         _Buttons([
           _Btn('start', () => _run('$name.start', () => s.start())),
-          _Btn('start(100ms)', () => _run('$name.start', () => s.start(const SensorParams(refreshRate: Duration(milliseconds: 100))))),
+          _Btn(
+            'start(100ms)',
+            () => _run(
+              '$name.start',
+              () => s.start(
+                const SensorParams(refreshRate: Duration(milliseconds: 100)),
+              ),
+            ),
+          ),
           _Btn('stop', () => _run('$name.stop', s.stop)),
         ]),
       ],
@@ -735,7 +1123,10 @@ class _DemoPageState extends State<DemoPage> {
             children: [
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text('Log', style: TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Log',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
               const Spacer(),
               TextButton(
@@ -748,10 +1139,14 @@ class _DemoPageState extends State<DemoPage> {
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               itemCount: log.length,
-              itemBuilder: (_, i) => SelectableText(
-                log[i],
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-              ),
+              itemBuilder:
+                  (_, i) => SelectableText(
+                    log[i],
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 12,
+                    ),
+                  ),
             ),
           ),
         ],
@@ -798,9 +1193,9 @@ class _SubTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 4),
-        child: Text(text, style: Theme.of(context).textTheme.titleSmall),
-      );
+    padding: const EdgeInsets.only(top: 8, bottom: 4),
+    child: Text(text, style: Theme.of(context).textTheme.titleSmall),
+  );
 }
 
 class _Props extends StatelessWidget {
@@ -819,7 +1214,10 @@ class _Props extends StatelessWidget {
             children: [
               SizedBox(
                 width: 200,
-                child: Text(e.key, style: style.copyWith(color: Theme.of(context).hintColor)),
+                child: Text(
+                  e.key,
+                  style: style.copyWith(color: Theme.of(context).hintColor),
+                ),
               ),
               Expanded(child: SelectableText('${e.value}', style: style)),
             ],
@@ -835,9 +1233,9 @@ class _Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Wrap(spacing: 6, runSpacing: 6, children: children),
-      );
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Wrap(spacing: 6, runSpacing: 6, children: children),
+  );
 }
 
 class _Btn extends StatelessWidget {
@@ -847,14 +1245,14 @@ class _Btn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => FilledButton.tonal(
-        style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        onPressed: onPressed,
-        child: Text(label, style: const TextStyle(fontSize: 12)),
-      );
+    style: FilledButton.styleFrom(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      minimumSize: Size.zero,
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    ),
+    onPressed: onPressed,
+    child: Text(label, style: const TextStyle(fontSize: 12)),
+  );
 }
 
 class _Field extends StatelessWidget {
@@ -864,15 +1262,15 @@ class _Field extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: label,
-            isDense: true,
-            border: const OutlineInputBorder(),
-          ),
-          style: const TextStyle(fontSize: 13),
-        ),
-      );
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        isDense: true,
+        border: const OutlineInputBorder(),
+      ),
+      style: const TextStyle(fontSize: 13),
+    ),
+  );
 }

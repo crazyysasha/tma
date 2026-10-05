@@ -58,7 +58,10 @@ final class FailedEvent {
 
 /// Payload of `biometricAuthRequested`.
 final class BiometricAuthRequestedEvent {
-  const BiometricAuthRequestedEvent({required this.isAuthenticated, this.token});
+  const BiometricAuthRequestedEvent({
+    required this.isAuthenticated,
+    this.token,
+  });
   final bool isAuthenticated;
   final String? token;
 }

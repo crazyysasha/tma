@@ -20,7 +20,10 @@ void main() {
   group('TmaClientPlatform', () {
     test('classifies known platforms and keeps raw value', () {
       expect(TmaClientPlatform.fromRaw('ios').isMobile, isTrue);
-      expect(TmaClientPlatform.fromRaw('android_x').kind, TmaClientPlatformKind.androidX);
+      expect(
+        TmaClientPlatform.fromRaw('android_x').kind,
+        TmaClientPlatformKind.androidX,
+      );
       expect(TmaClientPlatform.fromRaw('tdesktop').isDesktop, isTrue);
       expect(TmaClientPlatform.fromRaw('weba').isWeb, isTrue);
       final future = TmaClientPlatform.fromRaw('visionos');
@@ -112,10 +115,14 @@ void main() {
     test('converts to EdgeInsets and adds', () {
       const a = SafeAreaInset(top: 10, bottom: 5);
       const b = SafeAreaInset(left: 1, right: 2);
-      expect((a + b).toEdgeInsets(),
-          const EdgeInsets.only(top: 10, bottom: 5, left: 1, right: 2));
-      expect(SafeAreaInset.fromJson({'top': 44, 'bottom': '34'}),
-          const SafeAreaInset(top: 44, bottom: 34));
+      expect(
+        (a + b).toEdgeInsets(),
+        const EdgeInsets.only(top: 10, bottom: 5, left: 1, right: 2),
+      );
+      expect(
+        SafeAreaInset.fromJson({'top': 44, 'bottom': '34'}),
+        const SafeAreaInset(top: 44, bottom: 34),
+      );
     });
   });
 }

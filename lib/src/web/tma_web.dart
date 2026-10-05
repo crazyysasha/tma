@@ -27,23 +27,26 @@ import 'js_utils.dart';
 /// [Tma] backed by a real `window.Telegram.WebApp`.
 final class TmaWeb extends Tma {
   TmaWeb(this._js)
-      : version = TmaVersion.parse(_js.version),
-        platform = TmaClientPlatform.fromRaw(_js.platform),
-        events = _EventsWeb(_js),
-        backButton = _BackButtonWeb(_js),
-        settingsButton = _SettingsButtonWeb(_js),
-        mainButton = _BottomButtonWeb(_js, _js.mainButton, 'mainButtonClicked'),
-        secondaryButton =
-            _BottomButtonWeb(_js, _js.secondaryButton, 'secondaryButtonClicked'),
-        hapticFeedback = _HapticsWeb(_js),
-        cloudStorage = _CloudStorageWeb(_js),
-        deviceStorage = _DeviceStorageWeb(_js),
-        secureStorage = _SecureStorageWeb(_js),
-        biometricManager = _BiometricsWeb(_js),
-        locationManager = _LocationWeb(_js),
-        accelerometer = _SensorWeb(_js, _js.accelerometer, 'accelerometer'),
-        gyroscope = _SensorWeb(_js, _js.gyroscope, 'gyroscope'),
-        deviceOrientation = _DeviceOrientationWeb(_js);
+    : version = TmaVersion.parse(_js.version),
+      platform = TmaClientPlatform.fromRaw(_js.platform),
+      events = _EventsWeb(_js),
+      backButton = _BackButtonWeb(_js),
+      settingsButton = _SettingsButtonWeb(_js),
+      mainButton = _BottomButtonWeb(_js, _js.mainButton, 'mainButtonClicked'),
+      secondaryButton = _BottomButtonWeb(
+        _js,
+        _js.secondaryButton,
+        'secondaryButtonClicked',
+      ),
+      hapticFeedback = _HapticsWeb(_js),
+      cloudStorage = _CloudStorageWeb(_js),
+      deviceStorage = _DeviceStorageWeb(_js),
+      secureStorage = _SecureStorageWeb(_js),
+      biometricManager = _BiometricsWeb(_js),
+      locationManager = _LocationWeb(_js),
+      accelerometer = _SensorWeb(_js, _js.accelerometer, 'accelerometer'),
+      gyroscope = _SensorWeb(_js, _js.gyroscope, 'gyroscope'),
+      deviceOrientation = _DeviceOrientationWeb(_js);
 
   final WebAppJS _js;
 
@@ -61,7 +64,10 @@ final class TmaWeb extends Tma {
     final required = TmaVersion.parse(min);
     if (version < required) {
       throw TmaUnsupportedException(
-          method: method, required: required, current: version);
+        method: method,
+        required: required,
+        current: version,
+      );
     }
   }
 
@@ -196,8 +202,9 @@ final class TmaWeb extends Tma {
   void expand() => guardJs(() => _js.expand());
 
   @override
-  void close({bool returnBack = false}) => guardJs(() =>
-      _js.close(returnBack ? jsObject({'return_back': true}) : null));
+  void close({bool returnBack = false}) => guardJs(
+    () => _js.close(returnBack ? jsObject({'return_back': true}) : null),
+  );
 
   @override
   void hideKeyboard() {
@@ -244,33 +251,46 @@ final class TmaWeb extends Tma {
   void sendData(String data) => guardJs(() => _js.sendData(data));
 
   @override
-  void switchInlineQuery(String query, {List<ChooseChatType>? chooseChatTypes}) {
+  void switchInlineQuery(
+    String query, {
+    List<ChooseChatType>? chooseChatTypes,
+  }) {
     _require('switchInlineQuery', '6.7');
-    guardJs(() => _js.switchInlineQuery(
-          query,
-          chooseChatTypes == null
-              ? null
-              : jsStringArray(chooseChatTypes.map((t) => t.name)),
-        ));
+    guardJs(
+      () => _js.switchInlineQuery(
+        query,
+        chooseChatTypes == null
+            ? null
+            : jsStringArray(chooseChatTypes.map((t) => t.name)),
+      ),
+    );
   }
 
   @override
-  void openLink(String url, {bool tryInstantView = false, bool tryBrowser = false}) {
-    guardJs(() => _js.openLink(
-          url,
-          jsObject({
-            if (tryInstantView) 'try_instant_view': true,
-            if (tryBrowser) 'try_browser': true,
-          }),
-        ));
+  void openLink(
+    String url, {
+    bool tryInstantView = false,
+    bool tryBrowser = false,
+  }) {
+    guardJs(
+      () => _js.openLink(
+        url,
+        jsObject({
+          if (tryInstantView) 'try_instant_view': true,
+          if (tryBrowser) 'try_browser': true,
+        }),
+      ),
+    );
   }
 
   @override
   void openTelegramLink(String url, {bool forceRequest = false}) {
-    guardJs(() => _js.openTelegramLink(
-          url,
-          jsObject({if (forceRequest) 'force_request': true}),
-        ));
+    guardJs(
+      () => _js.openTelegramLink(
+        url,
+        jsObject({if (forceRequest) 'force_request': true}),
+      ),
+    );
   }
 
   @override
@@ -279,7 +299,8 @@ final class TmaWeb extends Tma {
     return jsCallback<InvoiceStatus>((complete) {
       _js.openInvoice(
         url,
-        ((JSString status) => complete(InvoiceStatus.fromRaw(status.toDart))).toJS,
+        ((JSString status) => complete(InvoiceStatus.fromRaw(status.toDart)))
+            .toJS,
       );
     });
   }
@@ -287,8 +308,12 @@ final class TmaWeb extends Tma {
   @override
   void shareToStory(String mediaUrl, [StoryShareParams? params]) {
     _require('shareToStory', '7.8');
-    guardJs(() => _js.shareToStory(
-        mediaUrl, params == null ? null : jsObject(params.toJson())));
+    guardJs(
+      () => _js.shareToStory(
+        mediaUrl,
+        params == null ? null : jsObject(params.toJson()),
+      ),
+    );
   }
 
   @override
@@ -296,17 +321,24 @@ final class TmaWeb extends Tma {
     _require('shareMessage', '8.0');
     return jsCallback<bool>((complete) {
       _js.shareMessage(
-          preparedMessageId, ((JSBoolean sent) => complete(sent.toDart)).toJS);
+        preparedMessageId,
+        ((JSBoolean sent) => complete(sent.toDart)).toJS,
+      );
     });
   }
 
   @override
-  Future<bool> setEmojiStatus(String customEmojiId,
-      [EmojiStatusParams params = const EmojiStatusParams()]) {
+  Future<bool> setEmojiStatus(
+    String customEmojiId, [
+    EmojiStatusParams params = const EmojiStatusParams(),
+  ]) {
     _require('setEmojiStatus', '8.0');
     return jsCallback<bool>((complete) {
-      _js.setEmojiStatus(customEmojiId, jsObject(params.toJson()),
-          ((JSBoolean ok) => complete(ok.toDart)).toJS);
+      _js.setEmojiStatus(
+        customEmojiId,
+        jsObject(params.toJson()),
+        ((JSBoolean ok) => complete(ok.toDart)).toJS,
+      );
     });
   }
 
@@ -314,7 +346,9 @@ final class TmaWeb extends Tma {
   Future<bool> requestEmojiStatusAccess() {
     _require('requestEmojiStatusAccess', '8.0');
     return jsCallback<bool>((complete) {
-      _js.requestEmojiStatusAccess(((JSBoolean ok) => complete(ok.toDart)).toJS);
+      _js.requestEmojiStatusAccess(
+        ((JSBoolean ok) => complete(ok.toDart)).toJS,
+      );
     });
   }
 
@@ -322,8 +356,10 @@ final class TmaWeb extends Tma {
   Future<bool> downloadFile(DownloadFileParams params) {
     _require('downloadFile', '8.0');
     return jsCallback<bool>((complete) {
-      _js.downloadFile(jsObject(params.toJson()),
-          ((JSBoolean accepted) => complete(accepted.toDart)).toJS);
+      _js.downloadFile(
+        jsObject(params.toJson()),
+        ((JSBoolean accepted) => complete(accepted.toDart)).toJS,
+      );
     });
   }
 
@@ -337,8 +373,10 @@ final class TmaWeb extends Tma {
   Future<HomeScreenStatus> checkHomeScreenStatus() {
     _require('checkHomeScreenStatus', '8.0');
     return jsCallback<HomeScreenStatus>((complete) {
-      _js.checkHomeScreenStatus(((JSString status) =>
-          complete(HomeScreenStatus.fromRaw(status.toDart))).toJS);
+      _js.checkHomeScreenStatus(
+        ((JSString status) => complete(HomeScreenStatus.fromRaw(status.toDart)))
+            .toJS,
+      );
     });
   }
 
@@ -346,8 +384,10 @@ final class TmaWeb extends Tma {
   Future<String?> showPopup(PopupParams params) {
     _require('showPopup', '6.2');
     return jsCallback<String?>((complete) {
-      _js.showPopup(jsObject(params.toJson()),
-          ((JSAny? buttonId) => complete(jsStringOrNull(buttonId))).toJS);
+      _js.showPopup(
+        jsObject(params.toJson()),
+        ((JSAny? buttonId) => complete(jsStringOrNull(buttonId))).toJS,
+      );
     });
   }
 
@@ -372,20 +412,21 @@ final class TmaWeb extends Tma {
     _require('showScanQrPopup', '6.4');
     return jsCallback<String?>((complete) {
       // The SDK keeps the popup open until the callback returns `true`.
-      final callback = (JSAny? data) {
-        complete(jsStringOrNull(data));
-        return true.toJS;
-      }.toJS;
+      final callback =
+          (JSAny? data) {
+            complete(jsStringOrNull(data));
+            return true.toJS;
+          }.toJS;
       // `scanQrPopupClosed` fires when the user dismisses the scanner
       // without scanning anything.
       late final JSFunction closed;
-      closed = () {
-        _js.offEvent('scanQrPopupClosed', closed);
-        complete(null);
-      }.toJS;
+      closed =
+          () {
+            _js.offEvent('scanQrPopupClosed', closed);
+            complete(null);
+          }.toJS;
       _js.onEvent('scanQrPopupClosed', closed);
-      _js.showScanQrPopup(
-          jsObject({if (text != null) 'text': text}), callback);
+      _js.showScanQrPopup(jsObject({if (text != null) 'text': text}), callback);
     });
   }
 
@@ -400,7 +441,8 @@ final class TmaWeb extends Tma {
     _require('readTextFromClipboard', '6.4');
     return jsCallback<String?>((complete) {
       _js.readTextFromClipboard(
-          ((JSAny? data) => complete(jsStringOrNull(data))).toJS);
+        ((JSAny? data) => complete(jsStringOrNull(data))).toJS,
+      );
     });
   }
 
@@ -416,21 +458,26 @@ final class TmaWeb extends Tma {
   Future<ContactRequestResult> requestContact() {
     _require('requestContact', '6.9');
     return jsCallback<ContactRequestResult>((complete) {
-      _js.requestContact((JSBoolean sent, JSAny? event) {
-        final map = dartMap(event);
-        final status = switch (map['status']) {
-          'sent' => ContactRequestStatus.sent,
-          'cancelled' => ContactRequestStatus.cancelled,
-          _ => sent.toDart
-              ? ContactRequestStatus.sent
-              : ContactRequestStatus.unknown,
-        };
-        final response = map['response'];
-        complete(ContactRequestResult(
-          status: status,
-          data: response is String ? ContactData.tryParse(response) : null,
-        ));
-      }.toJS);
+      _js.requestContact(
+        (JSBoolean sent, JSAny? event) {
+          final map = dartMap(event);
+          final status = switch (map['status']) {
+            'sent' => ContactRequestStatus.sent,
+            'cancelled' => ContactRequestStatus.cancelled,
+            _ =>
+              sent.toDart
+                  ? ContactRequestStatus.sent
+                  : ContactRequestStatus.unknown,
+          };
+          final response = map['response'];
+          complete(
+            ContactRequestResult(
+              status: status,
+              data: response is String ? ContactData.tryParse(response) : null,
+            ),
+          );
+        }.toJS,
+      );
     });
   }
 
@@ -438,7 +485,10 @@ final class TmaWeb extends Tma {
   Future<bool> requestChat(int requestId) {
     _require('requestChat', '9.6');
     return jsCallback<bool>((complete) {
-      _js.requestChat(requestId, ((JSBoolean sent) => complete(sent.toDart)).toJS);
+      _js.requestChat(
+        requestId,
+        ((JSBoolean sent) => complete(sent.toDart)).toJS,
+      );
     });
   }
 }
@@ -454,10 +504,14 @@ Stream<T> _event<T>(WebAppJS js, String type, T Function(JSAny?) decode) =>
       decode: decode,
     );
 
-Stream<void> _signal(WebAppJS js, String type) => _event<void>(js, type, (_) {});
+Stream<void> _signal(WebAppJS js, String type) =>
+    _event<void>(js, type, (_) {});
 
-Stream<FailedEvent> _failed(WebAppJS js, String type) => _event(js, type,
-    (p) => FailedEvent(error: dartMap(p)['error']?.toString() ?? 'UNKNOWN'));
+Stream<FailedEvent> _failed(WebAppJS js, String type) => _event(
+  js,
+  type,
+  (p) => FailedEvent(error: dartMap(p)['error']?.toString() ?? 'UNKNOWN'),
+);
 
 final class _EventsWeb extends TmaEvents {
   _EventsWeb(this._js);
@@ -471,110 +525,153 @@ final class _EventsWeb extends TmaEvents {
   late final Stream<void> themeChanged = _signal(_js, 'themeChanged');
   @override
   late final Stream<ViewportChangedEvent> viewportChanged = _event(
-      _js,
-      'viewportChanged',
-      (p) => ViewportChangedEvent(
-          isStateStable: dartMap(p)['isStateStable'] == true));
+    _js,
+    'viewportChanged',
+    (p) => ViewportChangedEvent(
+      isStateStable: dartMap(p)['isStateStable'] == true,
+    ),
+  );
   @override
   late final Stream<void> safeAreaChanged = _signal(_js, 'safeAreaChanged');
   @override
-  late final Stream<void> contentSafeAreaChanged =
-      _signal(_js, 'contentSafeAreaChanged');
+  late final Stream<void> contentSafeAreaChanged = _signal(
+    _js,
+    'contentSafeAreaChanged',
+  );
   @override
   late final Stream<void> mainButtonClicked = _signal(_js, 'mainButtonClicked');
   @override
-  late final Stream<void> secondaryButtonClicked =
-      _signal(_js, 'secondaryButtonClicked');
+  late final Stream<void> secondaryButtonClicked = _signal(
+    _js,
+    'secondaryButtonClicked',
+  );
   @override
   late final Stream<void> backButtonClicked = _signal(_js, 'backButtonClicked');
   @override
-  late final Stream<void> settingsButtonClicked =
-      _signal(_js, 'settingsButtonClicked');
+  late final Stream<void> settingsButtonClicked = _signal(
+    _js,
+    'settingsButtonClicked',
+  );
   @override
-  late final Stream<InvoiceClosedEvent> invoiceClosed =
-      _event(_js, 'invoiceClosed', (p) {
-    final m = dartMap(p);
-    return InvoiceClosedEvent(
+  late final Stream<InvoiceClosedEvent> invoiceClosed = _event(
+    _js,
+    'invoiceClosed',
+    (p) {
+      final m = dartMap(p);
+      return InvoiceClosedEvent(
         url: m['url']?.toString() ?? '',
-        status: InvoiceStatus.fromRaw(m['status']?.toString()));
-  });
+        status: InvoiceStatus.fromRaw(m['status']?.toString()),
+      );
+    },
+  );
   @override
-  late final Stream<PopupClosedEvent> popupClosed = _event(_js, 'popupClosed',
-      (p) => PopupClosedEvent(buttonId: dartMap(p)['button_id']?.toString()));
+  late final Stream<PopupClosedEvent> popupClosed = _event(
+    _js,
+    'popupClosed',
+    (p) => PopupClosedEvent(buttonId: dartMap(p)['button_id']?.toString()),
+  );
   @override
-  late final Stream<QrTextReceivedEvent> qrTextReceived =
-      _event(_js, 'qrTextReceived',
-          (p) => QrTextReceivedEvent(data: dartMap(p)['data']?.toString() ?? ''));
+  late final Stream<QrTextReceivedEvent> qrTextReceived = _event(
+    _js,
+    'qrTextReceived',
+    (p) => QrTextReceivedEvent(data: dartMap(p)['data']?.toString() ?? ''),
+  );
   @override
   late final Stream<void> scanQrPopupClosed = _signal(_js, 'scanQrPopupClosed');
   @override
   late final Stream<ClipboardTextReceivedEvent> clipboardTextReceived = _event(
-      _js,
-      'clipboardTextReceived',
-      (p) => ClipboardTextReceivedEvent(data: dartMap(p)['data']?.toString()));
+    _js,
+    'clipboardTextReceived',
+    (p) => ClipboardTextReceivedEvent(data: dartMap(p)['data']?.toString()),
+  );
   @override
   late final Stream<WriteAccessRequestedEvent> writeAccessRequested = _event(
-      _js,
-      'writeAccessRequested',
-      (p) => WriteAccessRequestedEvent(allowed: dartMap(p)['status'] == 'allowed'));
+    _js,
+    'writeAccessRequested',
+    (p) =>
+        WriteAccessRequestedEvent(allowed: dartMap(p)['status'] == 'allowed'),
+  );
   @override
   late final Stream<void> contactRequested = _signal(_js, 'contactRequested');
   @override
   late final Stream<void> fullscreenChanged = _signal(_js, 'fullscreenChanged');
   @override
-  late final Stream<FailedEvent> fullscreenFailed = _failed(_js, 'fullscreenFailed');
+  late final Stream<FailedEvent> fullscreenFailed = _failed(
+    _js,
+    'fullscreenFailed',
+  );
   @override
   late final Stream<void> homeScreenAdded = _signal(_js, 'homeScreenAdded');
   @override
   late final Stream<HomeScreenCheckedEvent> homeScreenChecked = _event(
-      _js,
-      'homeScreenChecked',
-      (p) => HomeScreenCheckedEvent(
-          status: HomeScreenStatus.fromRaw(dartMap(p)['status']?.toString())));
+    _js,
+    'homeScreenChecked',
+    (p) => HomeScreenCheckedEvent(
+      status: HomeScreenStatus.fromRaw(dartMap(p)['status']?.toString()),
+    ),
+  );
   @override
   late final Stream<void> emojiStatusSet = _signal(_js, 'emojiStatusSet');
   @override
-  late final Stream<FailedEvent> emojiStatusFailed = _failed(_js, 'emojiStatusFailed');
+  late final Stream<FailedEvent> emojiStatusFailed = _failed(
+    _js,
+    'emojiStatusFailed',
+  );
   @override
-  late final Stream<void> emojiStatusAccessRequested =
-      _signal(_js, 'emojiStatusAccessRequested');
+  late final Stream<void> emojiStatusAccessRequested = _signal(
+    _js,
+    'emojiStatusAccessRequested',
+  );
   @override
   late final Stream<void> shareMessageSent = _signal(_js, 'shareMessageSent');
   @override
-  late final Stream<FailedEvent> shareMessageFailed =
-      _failed(_js, 'shareMessageFailed');
+  late final Stream<FailedEvent> shareMessageFailed = _failed(
+    _js,
+    'shareMessageFailed',
+  );
   @override
   late final Stream<FileDownloadRequestedEvent> fileDownloadRequested = _event(
-      _js,
-      'fileDownloadRequested',
-      (p) => FileDownloadRequestedEvent(
-          accepted: dartMap(p)['status'] == 'downloading'));
+    _js,
+    'fileDownloadRequested',
+    (p) => FileDownloadRequestedEvent(
+      accepted: dartMap(p)['status'] == 'downloading',
+    ),
+  );
   @override
-  late final Stream<void> locationManagerUpdated =
-      _signal(_js, 'locationManagerUpdated');
+  late final Stream<void> locationManagerUpdated = _signal(
+    _js,
+    'locationManagerUpdated',
+  );
   @override
   late final Stream<void> locationRequested = _signal(_js, 'locationRequested');
   @override
-  late final Stream<void> biometricManagerUpdated =
-      _signal(_js, 'biometricManagerUpdated');
+  late final Stream<void> biometricManagerUpdated = _signal(
+    _js,
+    'biometricManagerUpdated',
+  );
   @override
-  late final Stream<BiometricAuthRequestedEvent> biometricAuthRequested = _event(
-      _js, 'biometricAuthRequested', (p) {
-    final m = dartMap(p);
-    return BiometricAuthRequestedEvent(
-        isAuthenticated: m['isAuthenticated'] == true,
-        token: m['biometricToken']?.toString());
-  });
+  late final Stream<BiometricAuthRequestedEvent> biometricAuthRequested =
+      _event(_js, 'biometricAuthRequested', (p) {
+        final m = dartMap(p);
+        return BiometricAuthRequestedEvent(
+          isAuthenticated: m['isAuthenticated'] == true,
+          token: m['biometricToken']?.toString(),
+        );
+      });
   @override
   late final Stream<BiometricTokenUpdatedEvent> biometricTokenUpdated = _event(
-      _js,
-      'biometricTokenUpdated',
-      (p) => BiometricTokenUpdatedEvent(isUpdated: dartMap(p)['isUpdated'] == true));
+    _js,
+    'biometricTokenUpdated',
+    (p) =>
+        BiometricTokenUpdatedEvent(isUpdated: dartMap(p)['isUpdated'] == true),
+  );
   @override
   late final Stream<void> requestedChatSent = _signal(_js, 'requestedChatSent');
   @override
-  late final Stream<FailedEvent> requestedChatFailed =
-      _failed(_js, 'requestedChatFailed');
+  late final Stream<FailedEvent> requestedChatFailed = _failed(
+    _js,
+    'requestedChatFailed',
+  );
 }
 
 // -----------------------------------------------------------------------------
@@ -612,7 +709,7 @@ final class _SettingsButtonWeb extends SettingsButton {
 
 final class _BottomButtonWeb extends BottomButton {
   _BottomButtonWeb(WebAppJS js, this._btn, String clickEvent)
-      : onClick = _signal(js, clickEvent);
+    : onClick = _signal(js, clickEvent);
   final BottomButtonJS _btn;
 
   @override
@@ -631,12 +728,12 @@ final class _BottomButtonWeb extends BottomButton {
   bool get hasShineEffect => _btn.hasShineEffect;
   @override
   SecondaryButtonPosition? get position => switch (_btn.position) {
-        'left' => SecondaryButtonPosition.left,
-        'right' => SecondaryButtonPosition.right,
-        'top' => SecondaryButtonPosition.top,
-        'bottom' => SecondaryButtonPosition.bottom,
-        _ => null,
-      };
+    'left' => SecondaryButtonPosition.left,
+    'right' => SecondaryButtonPosition.right,
+    'top' => SecondaryButtonPosition.top,
+    'bottom' => SecondaryButtonPosition.bottom,
+    _ => null,
+  };
   @override
   bool get isProgressVisible => _btn.isProgressVisible;
   @override
@@ -691,27 +788,31 @@ final class _CloudStorageWeb extends CloudStorage {
   Future<void> setItem(String key, String value) =>
       jsStorageCallback((cb) => _s.setItem(key, value, cb), (_, _) {});
   @override
-  Future<String?> getItem(String key) =>
-      jsStorageCallback((cb) => _s.getItem(key, cb), (r, _) => jsStringOrNull(r));
+  Future<String?> getItem(String key) => jsStorageCallback(
+    (cb) => _s.getItem(key, cb),
+    (r, _) => jsStringOrNull(r),
+  );
   @override
   Future<Map<String, String>> getItems(List<String> keys) => jsStorageCallback(
-        (cb) => _s.getItems(jsStringArray(keys), cb),
-        (r, _) => dartMap(r).map((k, v) => MapEntry(k, v?.toString() ?? '')),
-      );
+    (cb) => _s.getItems(jsStringArray(keys), cb),
+    (r, _) => dartMap(r).map((k, v) => MapEntry(k, v?.toString() ?? '')),
+  );
   @override
   Future<void> removeItem(String key) =>
       jsStorageCallback((cb) => _s.removeItem(key, cb), (_, _) {});
   @override
   Future<void> removeItems(List<String> keys) => jsStorageCallback(
-      (cb) => _s.removeItems(jsStringArray(keys), cb), (_, _) {});
+    (cb) => _s.removeItems(jsStringArray(keys), cb),
+    (_, _) {},
+  );
   @override
   Future<List<String>> getKeys() => jsStorageCallback(
-        (cb) => _s.getKeys(cb),
-        (r, _) => switch (r.dartify()) {
-          List<Object?> l => [for (final k in l) k.toString()],
-          _ => const <String>[],
-        },
-      );
+    (cb) => _s.getKeys(cb),
+    (r, _) => switch (r.dartify()) {
+      List<Object?> l => [for (final k in l) k.toString()],
+      _ => const <String>[],
+    },
+  );
 }
 
 final class _DeviceStorageWeb extends DeviceStorage {
@@ -723,8 +824,10 @@ final class _DeviceStorageWeb extends DeviceStorage {
   Future<void> setItem(String key, String value) =>
       jsStorageCallback((cb) => _s.setItem(key, value, cb), (_, _) {});
   @override
-  Future<String?> getItem(String key) =>
-      jsStorageCallback((cb) => _s.getItem(key, cb), (r, _) => jsStringOrNull(r));
+  Future<String?> getItem(String key) => jsStorageCallback(
+    (cb) => _s.getItem(key, cb),
+    (r, _) => jsStringOrNull(r),
+  );
   @override
   Future<void> removeItem(String key) =>
       jsStorageCallback((cb) => _s.removeItem(key, cb), (_, _) {});
@@ -742,16 +845,18 @@ final class _SecureStorageWeb extends SecureStorage {
       jsStorageCallback((cb) => _s.setItem(key, value, cb), (_, _) {});
   @override
   Future<SecureStorageItem> getItem(String key) => jsStorageCallback(
-        (cb) => _s.getItem(key, cb),
-        (r, canRestore) => SecureStorageItem(
-          value: jsStringOrNull(r),
-          canRestore: !canRestore.isUndefinedOrNull &&
-              (canRestore as JSBoolean).toDart,
-        ),
-      );
+    (cb) => _s.getItem(key, cb),
+    (r, canRestore) => SecureStorageItem(
+      value: jsStringOrNull(r),
+      canRestore:
+          !canRestore.isUndefinedOrNull && (canRestore as JSBoolean).toDart,
+    ),
+  );
   @override
   Future<String?> restoreItem(String key) => jsStorageCallback(
-      (cb) => _s.restoreItem(key, cb), (r, _) => jsStringOrNull(r));
+    (cb) => _s.restoreItem(key, cb),
+    (r, _) => jsStringOrNull(r),
+  );
   @override
   Future<void> removeItem(String key) =>
       jsStorageCallback((cb) => _s.removeItem(key, cb), (_, _) {});
@@ -788,21 +893,36 @@ final class _BiometricsWeb extends BiometricManager {
   Future<void> init() =>
       jsCallback<void>((complete) => _b.init((() => complete(null)).toJS));
   @override
-  Future<bool> requestAccess([BiometricParams params = const BiometricParams()]) =>
-      jsCallback<bool>((complete) => _b.requestAccess(
-          jsObject(params.toJson()), ((JSBoolean ok) => complete(ok.toDart)).toJS));
+  Future<bool> requestAccess([
+    BiometricParams params = const BiometricParams(),
+  ]) => jsCallback<bool>(
+    (complete) => _b.requestAccess(
+      jsObject(params.toJson()),
+      ((JSBoolean ok) => complete(ok.toDart)).toJS,
+    ),
+  );
   @override
-  Future<BiometricAuthResult> authenticate(
-          [BiometricParams params = const BiometricParams()]) =>
-      jsCallback<BiometricAuthResult>((complete) => _b.authenticate(
-            jsObject(params.toJson()),
-            ((JSBoolean ok, JSAny? token) => complete(BiometricAuthResult(
-                isAuthenticated: ok.toDart, token: jsStringOrNull(token)))).toJS,
-          ));
+  Future<BiometricAuthResult> authenticate([
+    BiometricParams params = const BiometricParams(),
+  ]) => jsCallback<BiometricAuthResult>(
+    (complete) => _b.authenticate(
+      jsObject(params.toJson()),
+      ((JSBoolean ok, JSAny? token) => complete(
+            BiometricAuthResult(
+              isAuthenticated: ok.toDart,
+              token: jsStringOrNull(token),
+            ),
+          ))
+          .toJS,
+    ),
+  );
   @override
-  Future<bool> updateBiometricToken(String token) =>
-      jsCallback<bool>((complete) => _b.updateBiometricToken(
-          token, ((JSBoolean ok) => complete(ok.toDart)).toJS));
+  Future<bool> updateBiometricToken(String token) => jsCallback<bool>(
+    (complete) => _b.updateBiometricToken(
+      token,
+      ((JSBoolean ok) => complete(ok.toDart)).toJS,
+    ),
+  );
   @override
   void openSettings() => guardJs(() => _b.openSettings());
 }
@@ -827,21 +947,27 @@ final class _LocationWeb extends LocationManager {
   Future<void> init() =>
       jsCallback<void>((complete) => _l.init((() => complete(null)).toJS));
   @override
-  Future<LocationData?> getLocation() =>
-      jsCallback<LocationData?>((complete) => _l.getLocation((JSAny? data) {
-            complete(data.isUndefinedOrNull
-                ? null
-                : LocationData.fromJson(dartMap(data)));
-          }.toJS));
+  Future<LocationData?> getLocation() => jsCallback<LocationData?>(
+    (complete) => _l.getLocation(
+      (JSAny? data) {
+        complete(
+          data.isUndefinedOrNull ? null : LocationData.fromJson(dartMap(data)),
+        );
+      }.toJS,
+    ),
+  );
   @override
   void openSettings() => guardJs(() => _l.openSettings());
 }
 
 final class _SensorWeb extends MotionSensor {
   _SensorWeb(WebAppJS js, this._s, String prefix)
-      : onChanged = _event(js, '${prefix}Changed', (_) => _read(_s)),
-        onFailed = _event(js, '${prefix}Failed',
-            (p) => dartMap(p)['error']?.toString() ?? 'UNKNOWN');
+    : onChanged = _event(js, '${prefix}Changed', (_) => _read(_s)),
+      onFailed = _event(
+        js,
+        '${prefix}Failed',
+        (p) => dartMap(p)['error']?.toString() ?? 'UNKNOWN',
+      );
   final SensorJS _s;
 
   static Vector3 _read(SensorJS s) =>
@@ -857,28 +983,39 @@ final class _SensorWeb extends MotionSensor {
   final Stream<String> onFailed;
   @override
   Future<bool> start([SensorParams params = const SensorParams()]) =>
-      jsCallback<bool>((complete) => _s.start(
-          jsObject(params.toJson()), ((JSBoolean ok) => complete(ok.toDart)).toJS));
+      jsCallback<bool>(
+        (complete) => _s.start(
+          jsObject(params.toJson()),
+          ((JSBoolean ok) => complete(ok.toDart)).toJS,
+        ),
+      );
   @override
   Future<bool> stop() => jsCallback<bool>(
-      (complete) => _s.stop(((JSBoolean ok) => complete(ok.toDart)).toJS));
+    (complete) => _s.stop(((JSBoolean ok) => complete(ok.toDart)).toJS),
+  );
 }
 
 final class _DeviceOrientationWeb extends DeviceOrientation {
   _DeviceOrientationWeb(this._js)
-      : onChanged = _event(_js, 'deviceOrientationChanged',
-            (_) => _read(_js.deviceOrientation)),
-        onFailed = _event(_js, 'deviceOrientationFailed',
-            (p) => dartMap(p)['error']?.toString() ?? 'UNKNOWN');
+    : onChanged = _event(
+        _js,
+        'deviceOrientationChanged',
+        (_) => _read(_js.deviceOrientation),
+      ),
+      onFailed = _event(
+        _js,
+        'deviceOrientationFailed',
+        (p) => dartMap(p)['error']?.toString() ?? 'UNKNOWN',
+      );
   final WebAppJS _js;
   DeviceOrientationJS get _d => _js.deviceOrientation;
 
   static OrientationData _read(DeviceOrientationJS d) => OrientationData(
-        absolute: d.absolute,
-        alpha: jsDouble(d.alpha),
-        beta: jsDouble(d.beta),
-        gamma: jsDouble(d.gamma),
-      );
+    absolute: d.absolute,
+    alpha: jsDouble(d.alpha),
+    beta: jsDouble(d.beta),
+    gamma: jsDouble(d.gamma),
+  );
 
   @override
   bool get isStarted => _d.isStarted;
@@ -889,11 +1026,16 @@ final class _DeviceOrientationWeb extends DeviceOrientation {
   @override
   final Stream<String> onFailed;
   @override
-  Future<bool> start(
-          [DeviceOrientationParams params = const DeviceOrientationParams()]) =>
-      jsCallback<bool>((complete) => _d.start(
-          jsObject(params.toJson()), ((JSBoolean ok) => complete(ok.toDart)).toJS));
+  Future<bool> start([
+    DeviceOrientationParams params = const DeviceOrientationParams(),
+  ]) => jsCallback<bool>(
+    (complete) => _d.start(
+      jsObject(params.toJson()),
+      ((JSBoolean ok) => complete(ok.toDart)).toJS,
+    ),
+  );
   @override
   Future<bool> stop() => jsCallback<bool>(
-      (complete) => _d.stop(((JSBoolean ok) => complete(ok.toDart)).toJS));
+    (complete) => _d.stop(((JSBoolean ok) => complete(ok.toDart)).toJS),
+  );
 }

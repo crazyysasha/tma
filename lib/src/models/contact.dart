@@ -71,7 +71,10 @@ final class ContactData {
     return ContactData(
       raw: raw,
       contact: TelegramContact.fromJson(contactJson),
-      authDate: DateTime.fromMillisecondsSinceEpoch(authDate * 1000, isUtc: true),
+      authDate: DateTime.fromMillisecondsSinceEpoch(
+        authDate * 1000,
+        isUtc: true,
+      ),
       hash: params['hash'] ?? '',
     );
   }
@@ -92,8 +95,8 @@ final class ContactRequestResult {
   const ContactRequestResult({required this.status, this.data});
 
   const ContactRequestResult.cancelled()
-      : status = ContactRequestStatus.cancelled,
-        data = null;
+    : status = ContactRequestStatus.cancelled,
+      data = null;
 
   final ContactRequestStatus status;
 

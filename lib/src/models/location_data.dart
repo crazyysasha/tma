@@ -15,16 +15,16 @@ final class LocationData {
   });
 
   factory LocationData.fromJson(Map<String, Object?> json) => LocationData(
-        latitude: jsonDouble(json['latitude']) ?? 0,
-        longitude: jsonDouble(json['longitude']) ?? 0,
-        altitude: jsonDouble(json['altitude']),
-        course: jsonDouble(json['course']),
-        speed: jsonDouble(json['speed']),
-        horizontalAccuracy: jsonDouble(json['horizontal_accuracy']),
-        verticalAccuracy: jsonDouble(json['vertical_accuracy']),
-        courseAccuracy: jsonDouble(json['course_accuracy']),
-        speedAccuracy: jsonDouble(json['speed_accuracy']),
-      );
+    latitude: jsonDouble(json['latitude']) ?? 0,
+    longitude: jsonDouble(json['longitude']) ?? 0,
+    altitude: jsonDouble(json['altitude']),
+    course: jsonDouble(json['course']),
+    speed: jsonDouble(json['speed']),
+    horizontalAccuracy: jsonDouble(json['horizontal_accuracy']),
+    verticalAccuracy: jsonDouble(json['vertical_accuracy']),
+    courseAccuracy: jsonDouble(json['course_accuracy']),
+    speedAccuracy: jsonDouble(json['speed_accuracy']),
+  );
 
   final double latitude;
   final double longitude;
@@ -56,10 +56,20 @@ final class LocationData {
       other.speedAccuracy == speedAccuracy;
 
   @override
-  int get hashCode => Object.hash(latitude, longitude, altitude, course, speed,
-      horizontalAccuracy, verticalAccuracy, courseAccuracy, speedAccuracy);
+  int get hashCode => Object.hash(
+    latitude,
+    longitude,
+    altitude,
+    course,
+    speed,
+    horizontalAccuracy,
+    verticalAccuracy,
+    courseAccuracy,
+    speedAccuracy,
+  );
 
   @override
-  String toString() => 'LocationData(lat: $latitude, lng: $longitude, '
+  String toString() =>
+      'LocationData(lat: $latitude, lng: $longitude, '
       'accuracy: $horizontalAccuracy)';
 }

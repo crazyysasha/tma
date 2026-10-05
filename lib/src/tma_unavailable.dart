@@ -139,21 +139,30 @@ final class TmaUnavailable extends Tma {
   @override
   void sendData(String data) {}
   @override
-  void switchInlineQuery(String query, {List<ChooseChatType>? chooseChatTypes}) {}
+  void switchInlineQuery(
+    String query, {
+    List<ChooseChatType>? chooseChatTypes,
+  }) {}
   @override
-  void openLink(String url, {bool tryInstantView = false, bool tryBrowser = false}) {}
+  void openLink(
+    String url, {
+    bool tryInstantView = false,
+    bool tryBrowser = false,
+  }) {}
   @override
   void openTelegramLink(String url, {bool forceRequest = false}) {}
   @override
-  Future<InvoiceStatus> openInvoice(String url) async => _unavailable('openInvoice');
+  Future<InvoiceStatus> openInvoice(String url) async =>
+      _unavailable('openInvoice');
   @override
   void shareToStory(String mediaUrl, [StoryShareParams? params]) {}
   @override
   Future<bool> shareMessage(String preparedMessageId) async => false;
   @override
-  Future<bool> setEmojiStatus(String customEmojiId,
-          [EmojiStatusParams params = const EmojiStatusParams()]) async =>
-      false;
+  Future<bool> setEmojiStatus(
+    String customEmojiId, [
+    EmojiStatusParams params = const EmojiStatusParams(),
+  ]) async => false;
   @override
   Future<bool> requestEmojiStatusAccess() async => false;
   @override
@@ -164,7 +173,8 @@ final class TmaUnavailable extends Tma {
   Future<HomeScreenStatus> checkHomeScreenStatus() async =>
       HomeScreenStatus.unsupported;
   @override
-  Future<String?> showPopup(PopupParams params) async => _unavailable('showPopup');
+  Future<String?> showPopup(PopupParams params) async =>
+      _unavailable('showPopup');
   @override
   Future<void> showAlert(String message) async => _unavailable('showAlert');
   @override
@@ -342,7 +352,8 @@ final class _NoCloudStorage extends CloudStorage {
   @override
   Future<String?> getItem(String key) async => _u('getItem');
   @override
-  Future<Map<String, String>> getItems(List<String> keys) async => _u('getItems');
+  Future<Map<String, String>> getItems(List<String> keys) async =>
+      _u('getItems');
   @override
   Future<void> removeItem(String key) async => _u('removeItem');
   @override
@@ -400,12 +411,13 @@ final class _NoBiometrics extends BiometricManager {
   @override
   Future<void> init() async {}
   @override
-  Future<bool> requestAccess([BiometricParams params = const BiometricParams()]) async =>
-      false;
+  Future<bool> requestAccess([
+    BiometricParams params = const BiometricParams(),
+  ]) async => false;
   @override
-  Future<BiometricAuthResult> authenticate(
-          [BiometricParams params = const BiometricParams()]) async =>
-      const BiometricAuthResult(isAuthenticated: false);
+  Future<BiometricAuthResult> authenticate([
+    BiometricParams params = const BiometricParams(),
+  ]) async => const BiometricAuthResult(isAuthenticated: false);
   @override
   Future<bool> updateBiometricToken(String token) async => false;
   @override
@@ -443,7 +455,8 @@ final class _NoMotionSensor extends MotionSensor {
   @override
   Stream<String> get onFailed => _never;
   @override
-  Future<bool> start([SensorParams params = const SensorParams()]) async => false;
+  Future<bool> start([SensorParams params = const SensorParams()]) async =>
+      false;
   @override
   Future<bool> stop() async => false;
 }
@@ -459,9 +472,9 @@ final class _NoDeviceOrientation extends DeviceOrientation {
   @override
   Stream<String> get onFailed => _never;
   @override
-  Future<bool> start(
-          [DeviceOrientationParams params = const DeviceOrientationParams()]) async =>
-      false;
+  Future<bool> start([
+    DeviceOrientationParams params = const DeviceOrientationParams(),
+  ]) async => false;
   @override
   Future<bool> stop() async => false;
 }

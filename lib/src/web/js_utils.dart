@@ -76,14 +76,15 @@ Future<T> jsStorageCallback<T>(
   T Function(JSAny? result, JSAny? extra) decode,
 ) {
   final completer = Completer<T>();
-  final callback = (JSAny? error, JSAny? result, JSAny? extra) {
-    if (completer.isCompleted) return;
-    if (!error.isUndefinedOrNull) {
-      completer.completeError(TmaJsException(_jsErrorMessage(error!)));
-    } else {
-      completer.complete(decode(result, extra));
-    }
-  }.toJS;
+  final callback =
+      (JSAny? error, JSAny? result, JSAny? extra) {
+        if (completer.isCompleted) return;
+        if (!error.isUndefinedOrNull) {
+          completer.completeError(TmaJsException(_jsErrorMessage(error!)));
+        } else {
+          completer.complete(decode(result, extra));
+        }
+      }.toJS;
   try {
     invoke(callback);
   } catch (e, s) {

@@ -47,8 +47,10 @@ final class TmaClientPlatform {
     return TmaClientPlatform._(raw, kind);
   }
 
-  static const unknown =
-      TmaClientPlatform._('unknown', TmaClientPlatformKind.unknown);
+  static const unknown = TmaClientPlatform._(
+    'unknown',
+    TmaClientPlatformKind.unknown,
+  );
 
   final String raw;
   final TmaClientPlatformKind kind;

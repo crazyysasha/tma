@@ -82,7 +82,10 @@ extension type WebAppJS._(JSObject _) implements JSObject {
   external void onEvent(String eventType, JSFunction callback);
   external void offEvent(String eventType, JSFunction callback);
   external void sendData(String data);
-  external void switchInlineQuery(String query, [JSArray<JSString>? chooseChatTypes]);
+  external void switchInlineQuery(
+    String query, [
+    JSArray<JSString>? chooseChatTypes,
+  ]);
   external void openLink(String url, [JSObject? options]);
   external void openTelegramLink(String url, [JSObject? options]);
   external void openInvoice(String url, JSFunction callback);
@@ -98,7 +101,11 @@ extension type WebAppJS._(JSObject _) implements JSObject {
   external void shareToStory(String mediaUrl, [JSObject? params]);
   external void shareMessage(String msgId, JSFunction callback);
   external void requestChat(int reqId, JSFunction callback);
-  external void setEmojiStatus(String customEmojiId, JSObject params, JSFunction callback);
+  external void setEmojiStatus(
+    String customEmojiId,
+    JSObject params,
+    JSFunction callback,
+  );
   external void requestEmojiStatusAccess(JSFunction callback);
   external void hideKeyboard();
   external void ready();

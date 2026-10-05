@@ -50,12 +50,20 @@ void main() {
 
   test('data-returning methods throw TmaUnavailableException', () {
     final tma = Tma.instance;
-    expect(tma.openInvoice('https://t.me/\$x'), throwsA(isA<TmaUnavailableException>()));
-    expect(tma.showPopup(const PopupParams(message: 'm')),
-        throwsA(isA<TmaUnavailableException>()));
+    expect(
+      tma.openInvoice('https://t.me/\$x'),
+      throwsA(isA<TmaUnavailableException>()),
+    );
+    expect(
+      tma.showPopup(const PopupParams(message: 'm')),
+      throwsA(isA<TmaUnavailableException>()),
+    );
     expect(tma.showConfirm('m'), throwsA(isA<TmaUnavailableException>()));
     expect(tma.scanQr(), throwsA(isA<TmaUnavailableException>()));
-    expect(tma.cloudStorage.getItem('k'), throwsA(isA<TmaUnavailableException>()));
+    expect(
+      tma.cloudStorage.getItem('k'),
+      throwsA(isA<TmaUnavailableException>()),
+    );
   });
 
   test('event streams are empty and complete immediately', () async {

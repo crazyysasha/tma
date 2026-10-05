@@ -11,12 +11,12 @@ enum InvoiceStatus {
   unknown;
 
   static InvoiceStatus fromRaw(String? raw) => switch (raw) {
-        'paid' => paid,
-        'cancelled' => cancelled,
-        'failed' => failed,
-        'pending' => pending,
-        _ => unknown,
-      };
+    'paid' => paid,
+    'cancelled' => cancelled,
+    'failed' => failed,
+    'pending' => pending,
+    _ => unknown,
+  };
 }
 
 /// Result of `checkHomeScreenStatus`.
@@ -27,11 +27,11 @@ enum HomeScreenStatus {
   missed;
 
   static HomeScreenStatus fromRaw(String? raw) => switch (raw) {
-        'unsupported' => unsupported,
-        'added' => added,
-        'missed' => missed,
-        _ => unknown,
-      };
+    'unsupported' => unsupported,
+    'added' => added,
+    'missed' => missed,
+    _ => unknown,
+  };
 }
 
 enum HapticImpactStyle { light, medium, heavy, rigid, soft }
@@ -39,12 +39,7 @@ enum HapticImpactStyle { light, medium, heavy, rigid, soft }
 enum HapticNotificationType { success, warning, error }
 
 /// Chat types accepted by `switchInlineQuery`.
-enum ChooseChatType {
-  users,
-  bots,
-  groups,
-  channels;
-}
+enum ChooseChatType { users, bots, groups, channels }
 
 /// Color for `setHeaderColor`: either a theme key or an explicit color
 /// (Bot API 6.9+ for explicit colors).
@@ -105,8 +100,8 @@ final class PopupParams {
     required this.message,
     this.title,
     this.buttons = const [],
-  })  : assert(message.length >= 1 && message.length <= 256),
-        assert(title == null || title.length <= 64);
+  }) : assert(message.length >= 1 && message.length <= 256),
+       assert(title == null || title.length <= 64);
 
   /// 1-256 characters.
   final String message;
@@ -132,11 +127,8 @@ final class PopupParams {
 enum PopupButtonType { normal, ok, close, cancel, destructive }
 
 final class PopupButton {
-  const PopupButton({
-    this.id,
-    this.type = PopupButtonType.normal,
-    this.text,
-  }) : assert(id == null || id.length <= 64);
+  const PopupButton({this.id, this.type = PopupButtonType.normal, this.text})
+    : assert(id == null || id.length <= 64);
 
   /// Returned by `showPopup` when pressed. 0-64 characters.
   final String? id;
@@ -147,10 +139,10 @@ final class PopupButton {
   final String? text;
 
   Map<String, Object?> toJson() => {
-        if (id != null) 'id': id,
-        'type': type == PopupButtonType.normal ? 'default' : type.name,
-        if (text != null) 'text': text,
-      };
+    if (id != null) 'id': id,
+    'type': type == PopupButtonType.normal ? 'default' : type.name,
+    if (text != null) 'text': text,
+  };
 }
 
 /// Parameters of `shareToStory`.
@@ -162,23 +154,20 @@ final class StoryShareParams {
   final StoryWidgetLink? widgetLink;
 
   Map<String, Object?> toJson() => {
-        if (text != null) 'text': text,
-        if (widgetLink != null) 'widget_link': widgetLink!.toJson(),
-      };
+    if (text != null) 'text': text,
+    if (widgetLink != null) 'widget_link': widgetLink!.toJson(),
+  };
 }
 
 final class StoryWidgetLink {
   const StoryWidgetLink({required this.url, this.name})
-      : assert(name == null || name.length <= 48);
+    : assert(name == null || name.length <= 48);
   final String url;
 
   /// 0-48 characters.
   final String? name;
 
-  Map<String, Object?> toJson() => {
-        'url': url,
-        if (name != null) 'name': name,
-      };
+  Map<String, Object?> toJson() => {'url': url, if (name != null) 'name': name};
 }
 
 /// Parameters of `setEmojiStatus`.
@@ -189,8 +178,8 @@ final class EmojiStatusParams {
   final Duration? duration;
 
   Map<String, Object?> toJson() => {
-        if (duration != null) 'duration': duration!.inSeconds,
-      };
+    if (duration != null) 'duration': duration!.inSeconds,
+  };
 }
 
 /// Parameters of `downloadFile`.
@@ -205,7 +194,7 @@ final class DownloadFileParams {
 /// Parameters of `BiometricManager.requestAccess` / `authenticate`.
 final class BiometricParams {
   const BiometricParams({this.reason})
-      : assert(reason == null || reason.length <= 128);
+    : assert(reason == null || reason.length <= 128);
 
   /// Text shown to the user, 0-128 characters.
   final String? reason;
@@ -219,10 +208,10 @@ enum BiometricType {
   unknown;
 
   static BiometricType fromRaw(String? raw) => switch (raw) {
-        'finger' => finger,
-        'face' => face,
-        _ => unknown,
-      };
+    'finger' => finger,
+    'face' => face,
+    _ => unknown,
+  };
 }
 
 /// Result of `BiometricManager.authenticate`.
@@ -265,15 +254,15 @@ final class BottomButtonParams {
   final String? iconCustomEmojiId;
 
   Map<String, Object?> toJson() => {
-        if (text != null) 'text': text,
-        if (color != null) 'color': ThemeParams.toHex(color!),
-        if (textColor != null) 'text_color': ThemeParams.toHex(textColor!),
-        if (hasShineEffect != null) 'has_shine_effect': hasShineEffect,
-        if (position != null) 'position': position!.name,
-        if (isActive != null) 'is_active': isActive,
-        if (isVisible != null) 'is_visible': isVisible,
-        if (iconCustomEmojiId != null) 'icon_custom_emoji_id': iconCustomEmojiId,
-      };
+    if (text != null) 'text': text,
+    if (color != null) 'color': ThemeParams.toHex(color!),
+    if (textColor != null) 'text_color': ThemeParams.toHex(textColor!),
+    if (hasShineEffect != null) 'has_shine_effect': hasShineEffect,
+    if (position != null) 'position': position!.name,
+    if (isActive != null) 'is_active': isActive,
+    if (isVisible != null) 'is_visible': isVisible,
+    if (iconCustomEmojiId != null) 'icon_custom_emoji_id': iconCustomEmojiId,
+  };
 }
 
 /// Parameters of `Accelerometer.start`, `Gyroscope.start`.
@@ -294,8 +283,10 @@ final class DeviceOrientationParams extends SensorParams {
   final bool needAbsolute;
 
   @override
-  Map<String, Object?> toJson() =>
-      {...super.toJson(), 'need_absolute': needAbsolute};
+  Map<String, Object?> toJson() => {
+    ...super.toJson(),
+    'need_absolute': needAbsolute,
+  };
 }
 
 /// Three-axis reading from the accelerometer or gyroscope.
@@ -325,8 +316,12 @@ final class OrientationData {
     required this.beta,
     required this.gamma,
   });
-  static const zero =
-      OrientationData(absolute: false, alpha: 0, beta: 0, gamma: 0);
+  static const zero = OrientationData(
+    absolute: false,
+    alpha: 0,
+    beta: 0,
+    gamma: 0,
+  );
 
   final bool absolute;
 

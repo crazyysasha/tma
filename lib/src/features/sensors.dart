@@ -29,7 +29,8 @@ abstract class DeviceOrientation {
   OrientationData get value;
   Stream<OrientationData> get onChanged;
   Stream<String> get onFailed;
-  Future<bool> start(
-      [DeviceOrientationParams params = const DeviceOrientationParams()]);
+  Future<bool> start([
+    DeviceOrientationParams params = const DeviceOrientationParams(),
+  ]);
   Future<bool> stop();
 }

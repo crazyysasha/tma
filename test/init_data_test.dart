@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tma/tma.dart';
 
-String encode(Map<String, String> params) =>
-    params.entries.map((e) => '${e.key}=${Uri.encodeComponent(e.value)}').join('&');
+String encode(Map<String, String> params) => params.entries
+    .map((e) => '${e.key}=${Uri.encodeComponent(e.value)}')
+    .join('&');
 
 void main() {
   group('WebAppInitData.tryParse', () {
@@ -39,7 +40,8 @@ void main() {
         'can_send_after': '60',
         'auth_date': '1662771648',
         'signature': 'sig',
-        'hash': 'c501b71e775f74ce10e377dea85a7ea24ecd640b223ea86dfe453e0eaed2e2b2',
+        'hash':
+            'c501b71e775f74ce10e377dea85a7ea24ecd640b223ea86dfe453e0eaed2e2b2',
       });
 
       final d = WebAppInitData.tryParse(raw)!;
@@ -64,7 +66,11 @@ void main() {
 
     test('survives & and = inside user name and JSON', () {
       final raw = encode({
-        'user': jsonEncode({'id': 1, 'first_name': 'Tom & Jerry', 'last_name': 'a=b'}),
+        'user': jsonEncode({
+          'id': 1,
+          'first_name': 'Tom & Jerry',
+          'last_name': 'a=b',
+        }),
         'auth_date': '1',
         'hash': 'h',
       });
@@ -83,7 +89,10 @@ void main() {
 
     test('isOlderThan compares against authDate', () {
       final d = WebAppInitData.tryParse('auth_date=1000&hash=x')!;
-      final now = DateTime.fromMillisecondsSinceEpoch(1000 * 1000 + 3600 * 1000, isUtc: true);
+      final now = DateTime.fromMillisecondsSinceEpoch(
+        1000 * 1000 + 3600 * 1000,
+        isUtc: true,
+      );
       expect(d.isOlderThan(const Duration(minutes: 30), now: now), isTrue);
       expect(d.isOlderThan(const Duration(hours: 2), now: now), isFalse);
     });
