@@ -21,8 +21,12 @@ Map<String, Object?> dartMap(JSAny? value) {
 double jsDouble(JSNumber? value, [double fallback = 0]) =>
     value.isUndefinedOrNull ? fallback : value!.toDartDouble;
 
+/// `null` for `undefined`, `null` and any non-string value (the SDK uses
+/// `false` as "unset" for some string properties).
 String? jsStringOrNull(JSAny? value) =>
-    value.isUndefinedOrNull ? null : (value as JSString).toDart;
+    value.isUndefinedOrNull || !value.isA<JSString>()
+        ? null
+        : (value as JSString).toDart;
 
 /// Runs a synchronous SDK call and rethrows JavaScript errors as
 /// [TmaJsException]. Dart exceptions pass through untouched.

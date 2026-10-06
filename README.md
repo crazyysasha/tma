@@ -56,10 +56,11 @@ Detection relies on the SDK itself: Telegram passes `tgWebAppPlatform` and
   are silent no-ops.
 * **Permission requests** (`requestWriteAccess`, `requestContact`,
   `shareMessage`, ...) resolve to `false` / cancelled.
-* **Methods that must return data** (`openInvoice`, `showPopup`,
-  `showConfirm`, `scanQr`, cloud/device/secure storage) throw
-  `TmaUnavailableException`, so a missing integration never looks like a user
-  decision.
+* **Methods whose result is data produced by Telegram** (`openInvoice`,
+  `showPopup`, `showConfirm`, `scanQr`, `readTextFromClipboard`,
+  cloud/device/secure storage) throw `TmaUnavailableException`, so a missing
+  integration never looks like a user decision. Failures of `Future` methods
+  always arrive through the future, never as a synchronous throw.
 * **Streams** are empty.
 
 ## Version guard
@@ -89,7 +90,8 @@ tma.mainButton.onClick.listen((_) => submit());
 `WebApp` properties and methods, `BackButton`, `MainButton`,
 `SecondaryButton`, `SettingsButton`, `HapticFeedback`, `CloudStorage`,
 `DeviceStorage`, `SecureStorage`, `BiometricManager`, `LocationManager`,
-`Accelerometer`, `Gyroscope`, `DeviceOrientation`, all 45 events,
+`Accelerometer`, `Gyroscope`, `DeviceOrientation`, every `WebApp` event as a
+stream (35) plus sensor streams on the sensor objects,
 `requestChat` (9.6), `hideKeyboard` (9.1), `chat_join_request_query_id` (10.1).
 
 ## Security notes
@@ -102,6 +104,10 @@ tma.mainButton.onClick.listen((_) => submit());
 * Never log `initDataRaw` or `hash` in production.
 
 ## Testing
+
+Unit tests run on the VM (`flutter test`); the interop layer is covered by
+browser tests against a fake `window.Telegram.WebApp`
+(`flutter test --platform chrome test/web`).
 
 ```dart
 Tma.debugOverride(const TmaUnavailable(

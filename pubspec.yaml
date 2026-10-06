@@ -2,7 +2,7 @@ name: tma
 description: >-
   Type-safe Dart/Flutter bindings for the Telegram Mini Apps (Web Apps) API.
   Detects whether the app runs inside Telegram and degrades gracefully elsewhere.
-version: 1.0.0
+version: 1.0.1
 repository: https://github.com/crazyysasha/tma
 
 environment:
@@ -12,7 +12,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  meta: ^1.15.0
 
 dev_dependencies:
   flutter_test:

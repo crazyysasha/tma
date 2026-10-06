@@ -1,5 +1,3 @@
-import 'package:meta/meta.dart';
-
 import 'create_tma_stub.dart'
     if (dart.library.js_interop) 'web/create_tma_web.dart'
     as tma_factory;
@@ -36,13 +34,21 @@ import 'version.dart';
 ///
 /// Behaviour when Telegram is **not** available ([isAvailable] is `false`):
 ///
-/// * Properties return neutral values: `null`, `false`, `0`, empty.
-/// * Fire-and-forget methods (`ready`, `expand`, `show`, haptics...) do
-///   nothing.
-/// * Permission requests resolve to `false`.
-/// * Methods that must return data from Telegram (`openInvoice`,
-///   `showPopup`, cloud storage reads, ...) throw [TmaUnavailableException]
-///   so that a missing integration never looks like a user decision.
+/// * Properties return neutral values: `null`, `false`, `0`, empty. Flags
+///   that are `true` by default in the SDK (`isActive`,
+///   `isVerticalSwipesEnabled`) keep that default.
+/// * Fire-and-forget methods (`ready`, `expand`, `show`, haptics,
+///   `showAlert`...) do nothing and never fail.
+/// * Permission and status requests resolve to the negative answer:
+///   `false`, [ContactRequestStatus.cancelled], [HomeScreenStatus.unsupported],
+///   `null` location.
+/// * Methods whose result is data produced by Telegram (`openInvoice`,
+///   `showPopup`, `showConfirm`, `scanQr`, `readTextFromClipboard`, every
+///   `CloudStorage`/`DeviceStorage`/`SecureStorage` call) throw
+///   [TmaUnavailableException] so that a missing integration never looks
+///   like a user decision.
+/// * Every failure of a `Future`-returning method is delivered through the
+///   returned future, never thrown synchronously.
 abstract class Tma {
   const Tma();
 
@@ -53,7 +59,6 @@ abstract class Tma {
 
   /// Replaces [instance] with [tma], for tests and local previews. Pass
   /// `null` to go back to automatic detection on next access.
-  @visibleForTesting
   static void debugOverride(Tma? tma) => _instance = tma;
 
   // ---------------------------------------------------------------------------
@@ -154,7 +159,7 @@ abstract class Tma {
   void openLink(
     String url, {
     bool tryInstantView = false,
-    bool tryBrowser = false,
+    OpenLinkBrowser? tryBrowser,
   });
   void openTelegramLink(String url, {bool forceRequest = false});
   Future<InvoiceStatus> openInvoice(String url);
@@ -182,7 +187,8 @@ abstract class Tma {
   Future<bool> requestWriteAccess();
   Future<ContactRequestResult> requestContact();
 
-  /// Bot API 9.6+. Asks the user to pick a chat; the choice is delivered
-  /// to the bot via `chat_shared`-style update tagged with [requestId].
-  Future<bool> requestChat(int requestId);
+  /// Bot API 9.6+. Opens a dialog to pick or create a chat. [requestId] is
+  /// the `id` of a `PreparedKeyboardButton` obtained from the Bot API method
+  /// `savePreparedKeyboardButton`. Resolves `true` if the button was sent.
+  Future<bool> requestChat(String requestId);
 }

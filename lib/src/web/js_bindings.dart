@@ -100,7 +100,7 @@ extension type WebAppJS._(JSObject _) implements JSObject {
   external void downloadFile(JSObject params, JSFunction callback);
   external void shareToStory(String mediaUrl, [JSObject? params]);
   external void shareMessage(String msgId, JSFunction callback);
-  external void requestChat(int reqId, JSFunction callback);
+  external void requestChat(String reqId, JSFunction callback);
   external void setEmojiStatus(
     String customEmojiId,
     JSObject params,
@@ -130,7 +130,9 @@ extension type BottomButtonJS._(JSObject _) implements JSObject {
   external bool get hasShineEffect;
   external String? get position;
   external bool get isProgressVisible;
-  external String? get iconCustomEmojiId;
+
+  /// `false` until an icon is set, a string afterwards.
+  external JSAny? get iconCustomEmojiId;
   external void setText(String text);
   external void show();
   external void hide();

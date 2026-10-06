@@ -1,3 +1,20 @@
+## 1.0.1
+
+* `requestChat` takes the `PreparedKeyboardButton.id` string, not an int.
+* `openLink(tryBrowser:)` takes an `OpenLinkBrowser`, not a bool.
+* `BottomButton.iconCustomEmojiId` is `null` while unset instead of a
+  boolean leaking through the `String?` type.
+* `WebAppInitData.tryParse`/`ContactData.tryParse` return `null` on
+  malformed percent-encoding instead of throwing `ArgumentError`.
+* Unsupported-version errors of `Future` methods reject the future instead
+  of throwing synchronously.
+* `scanQr` no longer leaks its `scanQrPopupClosed` listener.
+* Outside Telegram `showAlert` is a no-op and `readTextFromClipboard`
+  throws, matching the documented contract.
+* Void methods no longer return the SDK's chainable JS object.
+* `Tma.debugOverride` is no longer `@visibleForTesting`.
+* Browser tests for the interop layer (`flutter test --platform chrome`).
+
 ## 1.0.0
 
 Complete rewrite.
@@ -6,7 +23,7 @@ Complete rewrite.
   `unavailableReason`. The stub no longer returns fake data.
 * Full Bot API 10.1 surface: all `WebApp` properties and methods, all
   sub-objects (buttons, haptics, cloud/device/secure storage, biometrics,
-  location, sensors) and all 45 events as broadcast streams.
+  location, sensors) and every `WebApp` event as a broadcast stream.
 * Version guard before every call (`TmaUnsupportedException`); SDK errors
   surface as `TmaJsException`.
 * Correct JS interop: parameters are passed as real JS objects (the previous

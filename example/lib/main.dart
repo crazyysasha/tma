@@ -68,6 +68,7 @@ class _DemoPageState extends State<DemoPage> {
   final inlineQuery = TextEditingController(text: 'hello');
   final sendDataText = TextEditingController(text: '{"action":"demo"}');
   final biometricToken = TextEditingController(text: 'token-123');
+  final requestChatId = TextEditingController();
   final mainButtonText = TextEditingController(text: 'Main button');
   final secondaryButtonText = TextEditingController(text: 'Secondary');
   final headerHex = TextEditingController(text: '#ff6600');
@@ -105,20 +106,10 @@ class _DemoPageState extends State<DemoPage> {
   Future<void> _run(String name, FutureOr<Object?> Function() action) async {
     try {
       final result = await action();
-      _log('$name → ${_format(result)}');
-    } on TmaException catch (e) {
-      _log('$name ✗ $e');
+      _log('$name → ${result ?? 'ok'}');
     } catch (e) {
       _log('$name ✗ $e');
     }
-  }
-
-  /// Void SDK methods are chainable in JavaScript and hand back the JS
-  /// object; show those as a plain "ok" instead of "[object Object]".
-  static String _format(Object? result) {
-    if (result == null) return 'ok';
-    final text = '$result';
-    return text.startsWith('[object ') ? 'ok' : text;
   }
 
   void _subscribeToEverything() {
@@ -658,6 +649,10 @@ class _DemoPageState extends State<DemoPage> {
     return _Section(
       title: 'Permissions and requests',
       children: [
+        _Field(
+          requestChatId,
+          'PreparedKeyboardButton id (savePreparedKeyboardButton)',
+        ),
         _Buttons([
           _Btn(
             'requestWriteAccess',
@@ -671,8 +666,9 @@ class _DemoPageState extends State<DemoPage> {
             }),
           ),
           _Btn(
-            'requestChat(1)',
-            () => _run('requestChat', () => tma.requestChat(1)),
+            'requestChat',
+            () =>
+                _run('requestChat', () => tma.requestChat(requestChatId.text)),
           ),
           _Btn(
             'requestEmojiStatusAccess',
@@ -705,7 +701,7 @@ class _DemoPageState extends State<DemoPage> {
             'openLink(browser)',
             () => _run(
               'openLink',
-              () => tma.openLink(url.text, tryBrowser: true),
+              () => tma.openLink(url.text, tryBrowser: OpenLinkBrowser.chrome),
             ),
           ),
         ]),

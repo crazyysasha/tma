@@ -147,7 +147,7 @@ final class TmaUnavailable extends Tma {
   void openLink(
     String url, {
     bool tryInstantView = false,
-    bool tryBrowser = false,
+    OpenLinkBrowser? tryBrowser,
   }) {}
   @override
   void openTelegramLink(String url, {bool forceRequest = false}) {}
@@ -176,7 +176,7 @@ final class TmaUnavailable extends Tma {
   Future<String?> showPopup(PopupParams params) async =>
       _unavailable('showPopup');
   @override
-  Future<void> showAlert(String message) async => _unavailable('showAlert');
+  Future<void> showAlert(String message) async {}
   @override
   Future<bool> showConfirm(String message) async => _unavailable('showConfirm');
   @override
@@ -184,14 +184,15 @@ final class TmaUnavailable extends Tma {
   @override
   void closeScanQrPopup() {}
   @override
-  Future<String?> readTextFromClipboard() async => null;
+  Future<String?> readTextFromClipboard() async =>
+      _unavailable('readTextFromClipboard');
   @override
   Future<bool> requestWriteAccess() async => false;
   @override
   Future<ContactRequestResult> requestContact() async =>
       const ContactRequestResult.cancelled();
   @override
-  Future<bool> requestChat(int requestId) async => false;
+  Future<bool> requestChat(String requestId) async => false;
 }
 
 const Stream<Never> _never = Stream<Never>.empty();

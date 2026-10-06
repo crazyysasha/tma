@@ -80,6 +80,12 @@ void main() {
       expect(d.hash, 'h');
     });
 
+    test('returns null on malformed percent-encoding', () {
+      expect(WebAppInitData.tryParse('auth_date=%'), isNull);
+      expect(WebAppInitData.tryParse('user=%zz&hash=x'), isNull);
+      expect(ContactData.tryParse('contact=%E0%A4%A'), isNull);
+    });
+
     test('tolerates missing optional fields and garbage JSON', () {
       final d = WebAppInitData.tryParse('user=not-json&auth_date=5&hash=x')!;
       expect(d.user, isNull);

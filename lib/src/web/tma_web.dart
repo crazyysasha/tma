@@ -59,6 +59,22 @@ final class TmaWeb extends Tma {
   @override
   final TmaClientPlatform platform;
 
+  /// Version-guarded [jsCallback]: an unsupported client rejects the returned
+  /// future instead of throwing synchronously, so every failure of a
+  /// `Future` method travels through the same channel.
+  Future<T> _future<T>(
+    String method,
+    String min,
+    void Function(void Function(T value) complete) invoke,
+  ) {
+    try {
+      _require(method, min);
+    } on TmaException catch (e, s) {
+      return Future<T>.error(e, s);
+    }
+    return jsCallback<T>(invoke);
+  }
+
   /// Throws [TmaUnsupportedException] if the client is older than [min].
   void _require(String method, String min) {
     final required = TmaVersion.parse(min);
@@ -197,14 +213,21 @@ final class TmaWeb extends Tma {
   // Lifecycle
 
   @override
-  void ready() => guardJs(() => _js.ready());
-  @override
-  void expand() => guardJs(() => _js.expand());
+  void ready() {
+    guardJs(() => _js.ready());
+  }
 
   @override
-  void close({bool returnBack = false}) => guardJs(
-    () => _js.close(returnBack ? jsObject({'return_back': true}) : null),
-  );
+  void expand() {
+    guardJs(() => _js.expand());
+  }
+
+  @override
+  void close({bool returnBack = false}) {
+    guardJs(
+      () => _js.close(returnBack ? jsObject({'return_back': true}) : null),
+    );
+  }
 
   @override
   void hideKeyboard() {
@@ -248,7 +271,9 @@ final class TmaWeb extends Tma {
   // Actions
 
   @override
-  void sendData(String data) => guardJs(() => _js.sendData(data));
+  void sendData(String data) {
+    guardJs(() => _js.sendData(data));
+  }
 
   @override
   void switchInlineQuery(
@@ -270,14 +295,14 @@ final class TmaWeb extends Tma {
   void openLink(
     String url, {
     bool tryInstantView = false,
-    bool tryBrowser = false,
+    OpenLinkBrowser? tryBrowser,
   }) {
     guardJs(
       () => _js.openLink(
         url,
         jsObject({
           if (tryInstantView) 'try_instant_view': true,
-          if (tryBrowser) 'try_browser': true,
+          if (tryBrowser != null) 'try_browser': tryBrowser.id,
         }),
       ),
     );
@@ -295,8 +320,7 @@ final class TmaWeb extends Tma {
 
   @override
   Future<InvoiceStatus> openInvoice(String url) {
-    _require('openInvoice', '6.1');
-    return jsCallback<InvoiceStatus>((complete) {
+    return _future<InvoiceStatus>('openInvoice', '6.1', (complete) {
       _js.openInvoice(
         url,
         ((JSString status) => complete(InvoiceStatus.fromRaw(status.toDart)))
@@ -318,8 +342,7 @@ final class TmaWeb extends Tma {
 
   @override
   Future<bool> shareMessage(String preparedMessageId) {
-    _require('shareMessage', '8.0');
-    return jsCallback<bool>((complete) {
+    return _future<bool>('shareMessage', '8.0', (complete) {
       _js.shareMessage(
         preparedMessageId,
         ((JSBoolean sent) => complete(sent.toDart)).toJS,
@@ -332,8 +355,7 @@ final class TmaWeb extends Tma {
     String customEmojiId, [
     EmojiStatusParams params = const EmojiStatusParams(),
   ]) {
-    _require('setEmojiStatus', '8.0');
-    return jsCallback<bool>((complete) {
+    return _future<bool>('setEmojiStatus', '8.0', (complete) {
       _js.setEmojiStatus(
         customEmojiId,
         jsObject(params.toJson()),
@@ -344,8 +366,7 @@ final class TmaWeb extends Tma {
 
   @override
   Future<bool> requestEmojiStatusAccess() {
-    _require('requestEmojiStatusAccess', '8.0');
-    return jsCallback<bool>((complete) {
+    return _future<bool>('requestEmojiStatusAccess', '8.0', (complete) {
       _js.requestEmojiStatusAccess(
         ((JSBoolean ok) => complete(ok.toDart)).toJS,
       );
@@ -354,8 +375,7 @@ final class TmaWeb extends Tma {
 
   @override
   Future<bool> downloadFile(DownloadFileParams params) {
-    _require('downloadFile', '8.0');
-    return jsCallback<bool>((complete) {
+    return _future<bool>('downloadFile', '8.0', (complete) {
       _js.downloadFile(
         jsObject(params.toJson()),
         ((JSBoolean accepted) => complete(accepted.toDart)).toJS,
@@ -371,8 +391,9 @@ final class TmaWeb extends Tma {
 
   @override
   Future<HomeScreenStatus> checkHomeScreenStatus() {
-    _require('checkHomeScreenStatus', '8.0');
-    return jsCallback<HomeScreenStatus>((complete) {
+    return _future<HomeScreenStatus>('checkHomeScreenStatus', '8.0', (
+      complete,
+    ) {
       _js.checkHomeScreenStatus(
         ((JSString status) => complete(HomeScreenStatus.fromRaw(status.toDart)))
             .toJS,
@@ -382,8 +403,7 @@ final class TmaWeb extends Tma {
 
   @override
   Future<String?> showPopup(PopupParams params) {
-    _require('showPopup', '6.2');
-    return jsCallback<String?>((complete) {
+    return _future<String?>('showPopup', '6.2', (complete) {
       _js.showPopup(
         jsObject(params.toJson()),
         ((JSAny? buttonId) => complete(jsStringOrNull(buttonId))).toJS,
@@ -393,40 +413,48 @@ final class TmaWeb extends Tma {
 
   @override
   Future<void> showAlert(String message) {
-    _require('showAlert', '6.2');
-    return jsCallback<void>((complete) {
+    return _future<void>('showAlert', '6.2', (complete) {
       _js.showAlert(message, (() => complete(null)).toJS);
     });
   }
 
   @override
   Future<bool> showConfirm(String message) {
-    _require('showConfirm', '6.2');
-    return jsCallback<bool>((complete) {
+    return _future<bool>('showConfirm', '6.2', (complete) {
       _js.showConfirm(message, ((JSBoolean ok) => complete(ok.toDart)).toJS);
     });
   }
 
   @override
   Future<String?> scanQr({String? text}) {
-    _require('showScanQrPopup', '6.4');
-    return jsCallback<String?>((complete) {
+    return _future<String?>('showScanQrPopup', '6.4', (complete) {
+      // `scanQrPopupClosed` fires when the user dismisses the scanner
+      // without scanning anything. The listener is removed on every exit
+      // path: scan, dismiss, or a synchronous SDK error.
+      late final JSFunction closed;
+      void cleanup() => _js.offEvent('scanQrPopupClosed', closed);
+      closed =
+          () {
+            cleanup();
+            complete(null);
+          }.toJS;
       // The SDK keeps the popup open until the callback returns `true`.
       final callback =
           (JSAny? data) {
+            cleanup();
             complete(jsStringOrNull(data));
             return true.toJS;
           }.toJS;
-      // `scanQrPopupClosed` fires when the user dismisses the scanner
-      // without scanning anything.
-      late final JSFunction closed;
-      closed =
-          () {
-            _js.offEvent('scanQrPopupClosed', closed);
-            complete(null);
-          }.toJS;
       _js.onEvent('scanQrPopupClosed', closed);
-      _js.showScanQrPopup(jsObject({if (text != null) 'text': text}), callback);
+      try {
+        _js.showScanQrPopup(
+          jsObject({if (text != null) 'text': text}),
+          callback,
+        );
+      } catch (_) {
+        cleanup();
+        rethrow;
+      }
     });
   }
 
@@ -438,8 +466,7 @@ final class TmaWeb extends Tma {
 
   @override
   Future<String?> readTextFromClipboard() {
-    _require('readTextFromClipboard', '6.4');
-    return jsCallback<String?>((complete) {
+    return _future<String?>('readTextFromClipboard', '6.4', (complete) {
       _js.readTextFromClipboard(
         ((JSAny? data) => complete(jsStringOrNull(data))).toJS,
       );
@@ -448,16 +475,14 @@ final class TmaWeb extends Tma {
 
   @override
   Future<bool> requestWriteAccess() {
-    _require('requestWriteAccess', '6.9');
-    return jsCallback<bool>((complete) {
+    return _future<bool>('requestWriteAccess', '6.9', (complete) {
       _js.requestWriteAccess(((JSBoolean ok) => complete(ok.toDart)).toJS);
     });
   }
 
   @override
   Future<ContactRequestResult> requestContact() {
-    _require('requestContact', '6.9');
-    return jsCallback<ContactRequestResult>((complete) {
+    return _future<ContactRequestResult>('requestContact', '6.9', (complete) {
       _js.requestContact(
         (JSBoolean sent, JSAny? event) {
           final map = dartMap(event);
@@ -482,9 +507,8 @@ final class TmaWeb extends Tma {
   }
 
   @override
-  Future<bool> requestChat(int requestId) {
-    _require('requestChat', '9.6');
-    return jsCallback<bool>((complete) {
+  Future<bool> requestChat(String requestId) {
+    return _future<bool>('requestChat', '9.6', (complete) {
       _js.requestChat(
         requestId,
         ((JSBoolean sent) => complete(sent.toDart)).toJS,
@@ -687,9 +711,14 @@ final class _BackButtonWeb extends BackButton {
   @override
   late final Stream<void> onClick = _signal(_js, 'backButtonClicked');
   @override
-  void show() => guardJs(() => _btn.show());
+  void show() {
+    guardJs(() => _btn.show());
+  }
+
   @override
-  void hide() => guardJs(() => _btn.hide());
+  void hide() {
+    guardJs(() => _btn.hide());
+  }
 }
 
 final class _SettingsButtonWeb extends SettingsButton {
@@ -702,9 +731,14 @@ final class _SettingsButtonWeb extends SettingsButton {
   @override
   late final Stream<void> onClick = _signal(_js, 'settingsButtonClicked');
   @override
-  void show() => guardJs(() => _btn.show());
+  void show() {
+    guardJs(() => _btn.show());
+  }
+
   @override
-  void hide() => guardJs(() => _btn.hide());
+  void hide() {
+    guardJs(() => _btn.hide());
+  }
 }
 
 final class _BottomButtonWeb extends BottomButton {
@@ -737,28 +771,49 @@ final class _BottomButtonWeb extends BottomButton {
   @override
   bool get isProgressVisible => _btn.isProgressVisible;
   @override
-  String? get iconCustomEmojiId => _btn.iconCustomEmojiId;
+  String? get iconCustomEmojiId => jsStringOrNull(_btn.iconCustomEmojiId);
   @override
   final Stream<void> onClick;
 
   @override
-  void setText(String text) => guardJs(() => _btn.setText(text));
+  void setText(String text) {
+    guardJs(() => _btn.setText(text));
+  }
+
   @override
-  void show() => guardJs(() => _btn.show());
+  void show() {
+    guardJs(() => _btn.show());
+  }
+
   @override
-  void hide() => guardJs(() => _btn.hide());
+  void hide() {
+    guardJs(() => _btn.hide());
+  }
+
   @override
-  void enable() => guardJs(() => _btn.enable());
+  void enable() {
+    guardJs(() => _btn.enable());
+  }
+
   @override
-  void disable() => guardJs(() => _btn.disable());
+  void disable() {
+    guardJs(() => _btn.disable());
+  }
+
   @override
-  void showProgress({bool leaveActive = false}) =>
-      guardJs(() => _btn.showProgress(leaveActive));
+  void showProgress({bool leaveActive = false}) {
+    guardJs(() => _btn.showProgress(leaveActive));
+  }
+
   @override
-  void hideProgress() => guardJs(() => _btn.hideProgress());
+  void hideProgress() {
+    guardJs(() => _btn.hideProgress());
+  }
+
   @override
-  void setParams(BottomButtonParams params) =>
-      guardJs(() => _btn.setParams(jsObject(params.toJson())));
+  void setParams(BottomButtonParams params) {
+    guardJs(() => _btn.setParams(jsObject(params.toJson())));
+  }
 }
 
 final class _HapticsWeb extends HapticFeedback {
@@ -767,13 +822,19 @@ final class _HapticsWeb extends HapticFeedback {
   HapticFeedbackJS get _h => _js.hapticFeedback;
 
   @override
-  void impactOccurred(HapticImpactStyle style) =>
-      guardJs(() => _h.impactOccurred(style.name));
+  void impactOccurred(HapticImpactStyle style) {
+    guardJs(() => _h.impactOccurred(style.name));
+  }
+
   @override
-  void notificationOccurred(HapticNotificationType type) =>
-      guardJs(() => _h.notificationOccurred(type.name));
+  void notificationOccurred(HapticNotificationType type) {
+    guardJs(() => _h.notificationOccurred(type.name));
+  }
+
   @override
-  void selectionChanged() => guardJs(() => _h.selectionChanged());
+  void selectionChanged() {
+    guardJs(() => _h.selectionChanged());
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -924,7 +985,9 @@ final class _BiometricsWeb extends BiometricManager {
     ),
   );
   @override
-  void openSettings() => guardJs(() => _b.openSettings());
+  void openSettings() {
+    guardJs(() => _b.openSettings());
+  }
 }
 
 final class _LocationWeb extends LocationManager {
@@ -957,7 +1020,9 @@ final class _LocationWeb extends LocationManager {
     ),
   );
   @override
-  void openSettings() => guardJs(() => _l.openSettings());
+  void openSettings() {
+    guardJs(() => _l.openSettings());
+  }
 }
 
 final class _SensorWeb extends MotionSensor {

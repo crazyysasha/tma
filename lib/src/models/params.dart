@@ -38,6 +38,38 @@ enum HapticImpactStyle { light, medium, heavy, rigid, soft }
 
 enum HapticNotificationType { success, warning, error }
 
+/// Browsers accepted by `openLink(tryBrowser:)` (Bot API 7.6+). The
+/// client falls back to the default browser if the named one is missing.
+enum OpenLinkBrowser {
+  googleChrome('google-chrome'),
+  chrome('chrome'),
+  mozillaFirefox('mozilla-firefox'),
+  firefox('firefox'),
+  microsoftEdge('microsoft-edge'),
+  edge('edge'),
+  opera('opera'),
+  operaMini('opera-mini'),
+  brave('brave'),
+  braveBrowser('brave-browser'),
+  duckduckgo('duckduckgo'),
+  duckduckgoBrowser('duckduckgo-browser'),
+  samsung('samsung'),
+  samsungBrowser('samsung-browser'),
+  vivaldi('vivaldi'),
+  vivaldiBrowser('vivaldi-browser'),
+  kiwi('kiwi'),
+  kiwiBrowser('kiwi-browser'),
+  uc('uc'),
+  ucBrowser('uc-browser'),
+  tor('tor'),
+  torBrowser('tor-browser');
+
+  const OpenLinkBrowser(this.id);
+
+  /// The identifier passed to Telegram as `try_browser`.
+  final String id;
+}
+
 /// Chat types accepted by `switchInlineQuery`.
 enum ChooseChatType { users, bots, groups, channels }
 

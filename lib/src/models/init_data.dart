@@ -41,6 +41,9 @@ final class WebAppInitData {
       params = Uri.splitQueryString(raw);
     } on FormatException {
       return null;
+    } on ArgumentError {
+      // Malformed or truncated percent-encoding.
+      return null;
     }
 
     Map<String, Object?>? object(String key) {

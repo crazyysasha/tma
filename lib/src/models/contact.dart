@@ -57,6 +57,9 @@ final class ContactData {
       params = Uri.splitQueryString(raw);
     } on FormatException {
       return null;
+    } on ArgumentError {
+      // Malformed or truncated percent-encoding.
+      return null;
     }
     final contactRaw = params['contact'];
     if (contactRaw == null) return null;
