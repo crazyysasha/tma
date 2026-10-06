@@ -25,8 +25,49 @@ double jsDouble(JSNumber? value, [double fallback = 0]) =>
 /// `false` as "unset" for some string properties).
 String? jsStringOrNull(JSAny? value) =>
     value.isUndefinedOrNull || !value.isA<JSString>()
-        ? null
-        : (value as JSString).toDart;
+    ? null
+    : (value as JSString).toDart;
+
+/// `true` only for a JS `true`; `false` for anything else, including a
+/// missing argument.
+bool jsBool(JSAny? value) =>
+    value.isA<JSBoolean>() && (value as JSBoolean).toDart;
+
+// -----------------------------------------------------------------------------
+// Dart functions handed to JavaScript.
+//
+// A function made with `.toJS` throws when JavaScript calls it with fewer
+// arguments than it has required parameters (dart2js, DDC and dart2wasm
+// alike), and the SDK swallows that exception: event handlers are invoked
+// with no arguments when an event has no payload, storage callbacks with
+// two arguments instead of three, `CloudStorage.getItem` errors with one.
+//
+// Every JS-facing callback in this package is therefore built with these
+// helpers, whose parameters are all optional. Extra arguments are ignored.
+// A test enforces that no other file converts a function literal with
+// `.toJS`.
+
+/// A JS function that takes no arguments.
+JSFunction jsFn0(void Function() body) => (() => body()).toJS;
+
+/// A JS function reading up to one argument.
+JSFunction jsFn1(void Function(JSAny? a) body) =>
+    (([JSAny? a]) => body(a)).toJS;
+
+/// A JS function reading up to two arguments.
+JSFunction jsFn2(void Function(JSAny? a, JSAny? b) body) =>
+    (([JSAny? a, JSAny? b]) => body(a, b)).toJS;
+
+/// A JS function reading up to three arguments.
+JSFunction jsFn3(void Function(JSAny? a, JSAny? b, JSAny? c) body) =>
+    (([JSAny? a, JSAny? b, JSAny? c]) => body(a, b, c)).toJS;
+
+/// [jsFn1] whose return value is handed back to JavaScript.
+JSFunction jsFn1Returning(JSAny? Function(JSAny? a) body) =>
+    (([JSAny? a]) => body(a)).toJS;
+
+// -----------------------------------------------------------------------------
+// Errors and futures
 
 /// Runs a synchronous SDK call and rethrows JavaScript errors as
 /// [TmaJsException]. Dart exceptions pass through untouched.
@@ -41,13 +82,14 @@ T guardJs<T>(T Function() body) {
 }
 
 String _jsErrorMessage(Object e) {
-  // JS `Error` objects surface in Dart as JS interop values; read `.message`
-  // when present so callers see `WebAppPopupOpened` instead of `[object]`.
+  // JS values surface in Dart as interop values: read a thrown `Error`'s
+  // `.message`, or a string error code such as `KEY_INVALID` as is.
   // ignore: invalid_runtime_check_with_js_interop_types
-  if (e is JSAny && e.isA<JSObject>()) {
-    final msg = (e as JSObject)['message'];
-    if (!msg.isUndefinedOrNull && msg.isA<JSString>()) {
-      return (msg as JSString).toDart;
+  if (e is JSAny) {
+    if (e.isA<JSString>()) return (e as JSString).toDart;
+    if (e.isA<JSObject>()) {
+      final msg = (e as JSObject)['message'];
+      if (msg.isA<JSString>()) return (msg as JSString).toDart;
     }
   }
   return e.toString();
@@ -76,27 +118,28 @@ Future<T> jsCallback<T>(void Function(void Function(T value) complete) invoke) {
 
 /// Adapts `complete` into the SDK's `(boolean) => void` callback.
 JSFunction jsBoolCallback(void Function(bool value) complete) =>
-    ((JSBoolean? value) => complete(value?.toDart ?? false)).toJS;
+    jsFn1((value) => complete(jsBool(value)));
 
 /// Adapts `complete` into a no-argument SDK callback.
 JSFunction jsDoneCallback(void Function(void value) complete) =>
-    (() => complete(null)).toJS;
+    jsFn0(() => complete(null));
 
-/// Node-style `(error, result)` callback used by the storage APIs.
+/// Node-style `(error, result[, extra])` callback used by the storage APIs.
+/// The SDK passes one, two or three arguments depending on storage and
+/// outcome.
 Future<T> jsStorageCallback<T>(
   void Function(JSFunction callback) invoke,
   T Function(JSAny? result, JSAny? extra) decode,
 ) {
   final completer = Completer<T>();
-  final callback =
-      (JSAny? error, JSAny? result, JSAny? extra) {
-        if (completer.isCompleted) return;
-        if (!error.isUndefinedOrNull) {
-          completer.completeError(TmaJsException(_jsErrorMessage(error!)));
-        } else {
-          completer.complete(decode(result, extra));
-        }
-      }.toJS;
+  final callback = jsFn3((error, result, extra) {
+    if (completer.isCompleted) return;
+    if (!error.isUndefinedOrNull) {
+      completer.completeError(TmaJsException(_jsErrorMessage(error!)));
+    } else {
+      completer.complete(decode(result, extra));
+    }
+  });
   try {
     invoke(callback);
   } catch (e, s) {
@@ -120,8 +163,8 @@ Stream<T> jsEventStream<T>({
   controller = StreamController<T>.broadcast(
     onListen: () {
       // Telegram calls listeners with `this` bound to WebApp and the payload
-      // (if any) as the single argument.
-      handler = ((JSAny? payload) => controller.add(decode(payload))).toJS;
+      // as the only argument, or with no argument when there is none.
+      handler = jsFn1((payload) => controller.add(decode(payload)));
       on(eventType, handler!);
     },
     onCancel: () {

@@ -39,10 +39,9 @@ final class WebAppUser {
   final bool? allowsWriteToPm;
   final String? photoUrl;
 
-  String get fullName =>
-      lastName == null || lastName!.isEmpty
-          ? firstName
-          : '$firstName $lastName';
+  String get fullName => lastName == null || lastName!.isEmpty
+      ? firstName
+      : '$firstName $lastName';
 
   Map<String, Object?> toJson() => {
     'id': id,

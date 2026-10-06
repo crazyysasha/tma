@@ -27,10 +27,9 @@ class ExampleApp extends StatelessWidget {
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
               seedColor: tp.buttonColor ?? Colors.blue,
-              brightness:
-                  tma.colorScheme == TmaColorScheme.dark
-                      ? Brightness.dark
-                      : Brightness.light,
+              brightness: tma.colorScheme == TmaColorScheme.dark
+                  ? Brightness.dark
+                  : Brightness.light,
             ),
             scaffoldBackgroundColor: tp.bgColor,
             visualDensity: VisualDensity.compact,
@@ -1043,11 +1042,10 @@ class _DemoPageState extends State<DemoPage> {
         const _SubTitle('DeviceOrientation'),
         StreamBuilder<OrientationData>(
           stream: tma.deviceOrientation.onChanged,
-          builder:
-              (_, snap) => _Props({
-                'isStarted': tma.deviceOrientation.isStarted,
-                'value': snap.data ?? tma.deviceOrientation.value,
-              }),
+          builder: (_, snap) => _Props({
+            'isStarted': tma.deviceOrientation.isStarted,
+            'value': snap.data ?? tma.deviceOrientation.value,
+          }),
         ),
         _Buttons([
           _Btn(
@@ -1083,11 +1081,8 @@ class _DemoPageState extends State<DemoPage> {
         _SubTitle(name),
         StreamBuilder<Vector3>(
           stream: s.onChanged,
-          builder:
-              (_, snap) => _Props({
-                'isStarted': s.isStarted,
-                'value': snap.data ?? s.value,
-              }),
+          builder: (_, snap) =>
+              _Props({'isStarted': s.isStarted, 'value': snap.data ?? s.value}),
         ),
         _Buttons([
           _Btn('start', () => _run('$name.start', () => s.start())),
@@ -1135,14 +1130,10 @@ class _DemoPageState extends State<DemoPage> {
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               itemCount: log.length,
-              itemBuilder:
-                  (_, i) => SelectableText(
-                    log[i],
-                    style: const TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 12,
-                    ),
-                  ),
+              itemBuilder: (_, i) => SelectableText(
+                log[i],
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+              ),
             ),
           ),
         ],

@@ -3,11 +3,10 @@ import 'models/params.dart';
 
 /// Produces the stream for one `Telegram.WebApp` event type. [decode] turns
 /// the event payload (an empty map when Telegram sends none) into a value.
-typedef TmaEventSource =
-    Stream<T> Function<T>(
-      String type,
-      T Function(Map<String, Object?> payload) decode,
-    );
+typedef TmaEventSource = Stream<T> Function<T>(
+  String type,
+  T Function(Map<String, Object?> payload) decode,
+);
 
 /// Broadcast streams for every `Telegram.WebApp.onEvent` event type.
 ///

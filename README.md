@@ -26,6 +26,8 @@ void main() {
 
 ## Setup
 
+Requires Dart 3.13 and Flutter 3.47 or newer.
+
 Add the official script to `web/index.html` **before** `flutter_bootstrap.js`:
 
 ```html
@@ -111,9 +113,17 @@ stream (35) plus sensor streams on the sensor objects,
 
 ## Testing
 
-Unit tests run on the VM (`flutter test`); the interop layer is covered by
-browser tests against a fake `window.Telegram.WebApp`
-(`flutter test --platform chrome test/web`).
+Unit tests run on the VM (`flutter test`). The interop layer has two
+browser suites (`flutter test --platform chrome test/web`, add `--wasm` for
+dart2wasm):
+
+* `real_sdk_test.dart` downloads the real `telegram-web-app.js` and plays the
+  Telegram client: it captures outgoing calls through
+  `window.TelegramWebviewProxy` and answers with
+  `Telegram.WebView.receiveEvent`, exactly like the mobile apps. It needs
+  network access and skips itself offline.
+* `tma_web_test.dart` uses a fake `window.Telegram.WebApp` for cases a client
+  cannot trigger, calling every callback with the SDK's exact arity.
 
 ```dart
 Tma.debugOverride(const TmaUnavailable(

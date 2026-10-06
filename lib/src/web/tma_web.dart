@@ -448,8 +448,9 @@ final class TmaWeb extends Tma {
     const TmaVersion(6, 1),
     (complete) => _js.openInvoice(
       url,
-      ((JSString status) => complete(InvoiceStatus.fromRaw(status.toDart)))
-          .toJS,
+      jsFn1(
+        (status) => complete(InvoiceStatus.fromRaw(jsStringOrNull(status))),
+      ),
     ),
   );
 
@@ -506,8 +507,9 @@ final class TmaWeb extends Tma {
     'checkHomeScreenStatus',
     const TmaVersion(8, 0),
     (complete) => _js.checkHomeScreenStatus(
-      ((JSString status) => complete(HomeScreenStatus.fromRaw(status.toDart)))
-          .toJS,
+      jsFn1(
+        (status) => complete(HomeScreenStatus.fromRaw(jsStringOrNull(status))),
+      ),
     ),
   );
 
@@ -517,7 +519,7 @@ final class TmaWeb extends Tma {
     const TmaVersion(6, 2),
     (complete) => _js.showPopup(
       jsObject(params.toJson()),
-      ((JSAny? buttonId) => complete(jsStringOrNull(buttonId))).toJS,
+      jsFn1((buttonId) => complete(jsStringOrNull(buttonId))),
     ),
   );
 
@@ -548,13 +550,13 @@ final class TmaWeb extends Tma {
         });
         try {
           _js.showScanQrPopup(
-            jsObject({if (text != null) 'text': text}),
-            (JSAny? data) {
+            jsObject({'text': ?text}),
+            jsFn1Returning((data) {
               closed.cancel();
               complete(jsStringOrNull(data));
               // Returning `true` tells the SDK to close the popup.
               return true.toJS;
-            }.toJS,
+            }),
           );
         } catch (_) {
           closed.cancel();
@@ -574,7 +576,7 @@ final class TmaWeb extends Tma {
     'readTextFromClipboard',
     const TmaVersion(6, 4),
     (complete) => _js.readTextFromClipboard(
-      ((JSAny? data) => complete(jsStringOrNull(data))).toJS,
+      jsFn1((data) => complete(jsStringOrNull(data))),
     ),
   );
 
@@ -590,13 +592,13 @@ final class TmaWeb extends Tma {
     'requestContact',
     const TmaVersion(6, 9),
     (complete) => _js.requestContact(
-      (JSBoolean sent, JSAny? event) {
+      jsFn2((sent, event) {
         final map = dartMap(event);
         final status = switch (map['status']) {
           'sent' => ContactRequestStatus.sent,
           'cancelled' => ContactRequestStatus.cancelled,
           _ =>
-            sent.toDart
+            jsBool(sent)
                 ? ContactRequestStatus.sent
                 : ContactRequestStatus.unknown,
         };
@@ -607,7 +609,7 @@ final class TmaWeb extends Tma {
             data: response is String ? ContactData.tryParse(response) : null,
           ),
         );
-      }.toJS,
+      }),
     ),
   );
 
@@ -897,13 +899,14 @@ final class _BiometricsWeb extends BiometricManager {
     _since,
     (complete) => _b.authenticate(
       jsObject(params.toJson()),
-      ((JSBoolean ok, JSAny? token) => complete(
-            BiometricAuthResult(
-              isAuthenticated: ok.toDart,
-              token: jsStringOrNull(token),
-            ),
-          ))
-          .toJS,
+      jsFn2(
+        (ok, token) => complete(
+          BiometricAuthResult(
+            isAuthenticated: jsBool(ok),
+            token: jsStringOrNull(token),
+          ),
+        ),
+      ),
     ),
   );
 
@@ -950,11 +953,11 @@ final class _LocationWeb extends LocationManager {
     'LocationManager.getLocation',
     _since,
     (complete) => _l.getLocation(
-      (JSAny? data) {
-        complete(
+      jsFn1(
+        (data) => complete(
           data.isUndefinedOrNull ? null : LocationData.fromJson(dartMap(data)),
-        );
-      }.toJS,
+        ),
+      ),
     ),
   );
 

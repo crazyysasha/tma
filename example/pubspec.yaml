@@ -3,7 +3,7 @@ description: Demonstrates the tma package inside and outside Telegram.
 publish_to: 'none'
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.13.0
 
 dependencies:
   flutter:

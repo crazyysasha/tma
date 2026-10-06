@@ -69,23 +69,20 @@ final class WebAppInitData {
       user: userJson == null ? null : WebAppUser.fromJson(userJson),
       receiver: receiverJson == null ? null : WebAppUser.fromJson(receiverJson),
       chat: chatJson == null ? null : WebAppChat.fromJson(chatJson),
-      chatType:
-          params.containsKey('chat_type')
-              ? ChatType.fromRaw(params['chat_type'])
-              : null,
+      chatType: params.containsKey('chat_type')
+          ? ChatType.fromRaw(params['chat_type'])
+          : null,
       chatInstance: params['chat_instance'],
       startParam: params['start_param'],
-      canSendAfter:
-          canSendAfterSeconds == null
-              ? null
-              : Duration(seconds: canSendAfterSeconds),
-      authDate:
-          authDateSeconds == null
-              ? DateTime.fromMillisecondsSinceEpoch(0, isUtc: true)
-              : DateTime.fromMillisecondsSinceEpoch(
-                authDateSeconds * 1000,
-                isUtc: true,
-              ),
+      canSendAfter: canSendAfterSeconds == null
+          ? null
+          : Duration(seconds: canSendAfterSeconds),
+      authDate: authDateSeconds == null
+          ? DateTime.fromMillisecondsSinceEpoch(0, isUtc: true)
+          : DateTime.fromMillisecondsSinceEpoch(
+              authDateSeconds * 1000,
+              isUtc: true,
+            ),
       hash: params['hash'] ?? '',
       signature: params['signature'],
     );

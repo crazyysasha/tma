@@ -1,3 +1,20 @@
+## 1.2.0
+
+* Fix (#2): callbacks handed to JavaScript failed when the SDK called them
+  with fewer arguments than declared, and the SDK swallowed the error.
+  Every event without data never reached Dart (button clicks,
+  `themeChanged`, `activated`, safe-area and fullscreen changes, sensor
+  readings, manager updates), `scanQr` hung when the scanner was closed, and
+  `CloudStorage` / `DeviceStorage` futures never completed.
+* All JS-facing callbacks are now built with `jsFn0`–`jsFn3` in
+  `js_utils.dart`, whose parameters are optional; a test forbids converting
+  function literals with `.toJS` anywhere else.
+* Browser tests against the real `telegram-web-app.js` (downloaded at test
+  time), playing the Telegram client through `TelegramWebviewProxy` and
+  `Telegram.WebView.receiveEvent`. The fake SDK now calls callbacks with the
+  SDK's exact arity.
+* Requires Dart 3.13 and Flutter 3.47.
+
 ## 1.1.0
 
 * `TmaEvents` is a concrete class built from a `TmaEventSource`; the event
