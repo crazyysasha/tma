@@ -74,6 +74,14 @@ Future<T> jsCallback<T>(void Function(void Function(T value) complete) invoke) {
   return completer.future;
 }
 
+/// Adapts `complete` into the SDK's `(boolean) => void` callback.
+JSFunction jsBoolCallback(void Function(bool value) complete) =>
+    ((JSBoolean? value) => complete(value?.toDart ?? false)).toJS;
+
+/// Adapts `complete` into a no-argument SDK callback.
+JSFunction jsDoneCallback(void Function(void value) complete) =>
+    (() => complete(null)).toJS;
+
 /// Node-style `(error, result)` callback used by the storage APIs.
 Future<T> jsStorageCallback<T>(
   void Function(JSFunction callback) invoke,

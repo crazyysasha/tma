@@ -2,16 +2,14 @@ import 'dart:ui' show Color;
 
 import 'environment.dart';
 import 'errors.dart';
-import 'features/back_button.dart';
 import 'features/biometric_manager.dart';
 import 'features/bottom_button.dart';
+import 'features/button.dart';
 import 'features/haptic_feedback.dart';
 import 'features/location_manager.dart';
 import 'features/sensors.dart';
-import 'features/settings_button.dart';
 import 'features/storage.dart';
 import 'models/contact.dart';
-import 'models/events.dart';
 import 'models/init_data.dart';
 import 'models/location_data.dart';
 import 'models/params.dart';
@@ -108,15 +106,15 @@ final class TmaUnavailable extends Tma {
   void hideKeyboard() {}
 
   @override
-  TmaEvents get events => const _NoEvents();
+  TmaEvents get events => TmaEvents.none;
   @override
-  BackButton get backButton => const _NoBackButton();
+  BackButton get backButton => const _NoButton();
   @override
   BottomButton get mainButton => const _NoBottomButton('main');
   @override
   BottomButton get secondaryButton => const _NoBottomButton('secondary');
   @override
-  SettingsButton get settingsButton => const _NoSettingsButton();
+  SettingsButton get settingsButton => const _NoButton();
   @override
   HapticFeedback get hapticFeedback => const _NoHaptics();
   @override
@@ -130,11 +128,12 @@ final class TmaUnavailable extends Tma {
   @override
   LocationManager get locationManager => const _NoLocation();
   @override
-  MotionSensor get accelerometer => const _NoMotionSensor();
+  MotionSensor get accelerometer => const _NoSensor(Vector3.zero);
   @override
-  MotionSensor get gyroscope => const _NoMotionSensor();
+  MotionSensor get gyroscope => const _NoSensor(Vector3.zero);
   @override
-  DeviceOrientation get deviceOrientation => const _NoDeviceOrientation();
+  DeviceOrientation get deviceOrientation =>
+      const _NoSensor(OrientationData.zero);
 
   @override
   void sendData(String data) {}
@@ -197,80 +196,8 @@ final class TmaUnavailable extends Tma {
 
 const Stream<Never> _never = Stream<Never>.empty();
 
-final class _NoEvents extends TmaEvents {
-  const _NoEvents();
-  @override
-  Stream<void> get activated => _never;
-  @override
-  Stream<void> get deactivated => _never;
-  @override
-  Stream<void> get themeChanged => _never;
-  @override
-  Stream<ViewportChangedEvent> get viewportChanged => _never;
-  @override
-  Stream<void> get safeAreaChanged => _never;
-  @override
-  Stream<void> get contentSafeAreaChanged => _never;
-  @override
-  Stream<void> get mainButtonClicked => _never;
-  @override
-  Stream<void> get secondaryButtonClicked => _never;
-  @override
-  Stream<void> get backButtonClicked => _never;
-  @override
-  Stream<void> get settingsButtonClicked => _never;
-  @override
-  Stream<InvoiceClosedEvent> get invoiceClosed => _never;
-  @override
-  Stream<PopupClosedEvent> get popupClosed => _never;
-  @override
-  Stream<QrTextReceivedEvent> get qrTextReceived => _never;
-  @override
-  Stream<void> get scanQrPopupClosed => _never;
-  @override
-  Stream<ClipboardTextReceivedEvent> get clipboardTextReceived => _never;
-  @override
-  Stream<WriteAccessRequestedEvent> get writeAccessRequested => _never;
-  @override
-  Stream<void> get contactRequested => _never;
-  @override
-  Stream<void> get fullscreenChanged => _never;
-  @override
-  Stream<FailedEvent> get fullscreenFailed => _never;
-  @override
-  Stream<void> get homeScreenAdded => _never;
-  @override
-  Stream<HomeScreenCheckedEvent> get homeScreenChecked => _never;
-  @override
-  Stream<void> get emojiStatusSet => _never;
-  @override
-  Stream<FailedEvent> get emojiStatusFailed => _never;
-  @override
-  Stream<void> get emojiStatusAccessRequested => _never;
-  @override
-  Stream<void> get shareMessageSent => _never;
-  @override
-  Stream<FailedEvent> get shareMessageFailed => _never;
-  @override
-  Stream<FileDownloadRequestedEvent> get fileDownloadRequested => _never;
-  @override
-  Stream<void> get locationManagerUpdated => _never;
-  @override
-  Stream<void> get locationRequested => _never;
-  @override
-  Stream<void> get biometricManagerUpdated => _never;
-  @override
-  Stream<BiometricAuthRequestedEvent> get biometricAuthRequested => _never;
-  @override
-  Stream<BiometricTokenUpdatedEvent> get biometricTokenUpdated => _never;
-  @override
-  Stream<void> get requestedChatSent => _never;
-  @override
-  Stream<FailedEvent> get requestedChatFailed => _never;
-}
-
-final class _NoBackButton extends BackButton {
-  const _NoBackButton();
+/// Shared by every button: invisible, never clicked, commands ignored.
+mixin _NoButtonMixin on TmaButton {
   @override
   bool get isVisible => false;
   @override
@@ -281,19 +208,11 @@ final class _NoBackButton extends BackButton {
   void hide() {}
 }
 
-final class _NoSettingsButton extends SettingsButton {
-  const _NoSettingsButton();
-  @override
-  bool get isVisible => false;
-  @override
-  Stream<void> get onClick => _never;
-  @override
-  void show() {}
-  @override
-  void hide() {}
+final class _NoButton extends TmaButton with _NoButtonMixin {
+  const _NoButton();
 }
 
-final class _NoBottomButton extends BottomButton {
+final class _NoBottomButton extends BottomButton with _NoButtonMixin {
   const _NoBottomButton(this.type);
   @override
   final String type;
@@ -303,8 +222,6 @@ final class _NoBottomButton extends BottomButton {
   Color? get color => null;
   @override
   Color? get textColor => null;
-  @override
-  bool get isVisible => false;
   @override
   bool get isActive => false;
   @override
@@ -316,13 +233,7 @@ final class _NoBottomButton extends BottomButton {
   @override
   String? get iconCustomEmojiId => null;
   @override
-  Stream<void> get onClick => _never;
-  @override
   void setText(String text) {}
-  @override
-  void show() {}
-  @override
-  void hide() {}
   @override
   void enable() {}
   @override
@@ -345,48 +256,49 @@ final class _NoHaptics extends HapticFeedback {
   void selectionChanged() {}
 }
 
-final class _NoCloudStorage extends CloudStorage {
-  const _NoCloudStorage();
-  Never _u(String m) => throw TmaUnavailableException('CloudStorage.$m');
-  @override
+/// Every storage call outside Telegram fails with
+/// [TmaUnavailableException]: storage reads are data produced by Telegram.
+mixin _NoStorageMixin {
+  String get _name;
+  Never _u(String method) => throw TmaUnavailableException('$_name.$method');
+
   Future<void> setItem(String key, String value) async => _u('setItem');
+  Future<void> removeItem(String key) async => _u('removeItem');
+}
+
+final class _NoCloudStorage extends CloudStorage with _NoStorageMixin {
+  const _NoCloudStorage();
+  @override
+  String get _name => 'CloudStorage';
   @override
   Future<String?> getItem(String key) async => _u('getItem');
   @override
   Future<Map<String, String>> getItems(List<String> keys) async =>
       _u('getItems');
   @override
-  Future<void> removeItem(String key) async => _u('removeItem');
-  @override
   Future<void> removeItems(List<String> keys) async => _u('removeItems');
   @override
   Future<List<String>> getKeys() async => _u('getKeys');
 }
 
-final class _NoDeviceStorage extends DeviceStorage {
+final class _NoDeviceStorage extends DeviceStorage with _NoStorageMixin {
   const _NoDeviceStorage();
-  Never _u(String m) => throw TmaUnavailableException('DeviceStorage.$m');
   @override
-  Future<void> setItem(String key, String value) async => _u('setItem');
+  String get _name => 'DeviceStorage';
   @override
   Future<String?> getItem(String key) async => _u('getItem');
-  @override
-  Future<void> removeItem(String key) async => _u('removeItem');
   @override
   Future<void> clear() async => _u('clear');
 }
 
-final class _NoSecureStorage extends SecureStorage {
+final class _NoSecureStorage extends SecureStorage with _NoStorageMixin {
   const _NoSecureStorage();
-  Never _u(String m) => throw TmaUnavailableException('SecureStorage.$m');
   @override
-  Future<void> setItem(String key, String value) async => _u('setItem');
+  String get _name => 'SecureStorage';
   @override
   Future<SecureStorageItem> getItem(String key) async => _u('getItem');
   @override
   Future<String?> restoreItem(String key) async => _u('restoreItem');
-  @override
-  Future<void> removeItem(String key) async => _u('removeItem');
   @override
   Future<void> clear() async => _u('clear');
 }
@@ -445,37 +357,18 @@ final class _NoLocation extends LocationManager {
   void openSettings() {}
 }
 
-final class _NoMotionSensor extends MotionSensor {
-  const _NoMotionSensor();
+final class _NoSensor<V, P extends SensorParams> extends Sensor<V, P> {
+  const _NoSensor(this.value);
+  @override
+  final V value;
   @override
   bool get isStarted => false;
   @override
-  Vector3 get value => Vector3.zero;
-  @override
-  Stream<Vector3> get onChanged => _never;
+  Stream<V> get onChanged => _never;
   @override
   Stream<String> get onFailed => _never;
   @override
-  Future<bool> start([SensorParams params = const SensorParams()]) async =>
-      false;
-  @override
-  Future<bool> stop() async => false;
-}
-
-final class _NoDeviceOrientation extends DeviceOrientation {
-  const _NoDeviceOrientation();
-  @override
-  bool get isStarted => false;
-  @override
-  OrientationData get value => OrientationData.zero;
-  @override
-  Stream<OrientationData> get onChanged => _never;
-  @override
-  Stream<String> get onFailed => _never;
-  @override
-  Future<bool> start([
-    DeviceOrientationParams params = const DeviceOrientationParams(),
-  ]) async => false;
+  Future<bool> start([P? params]) async => false;
   @override
   Future<bool> stop() async => false;
 }

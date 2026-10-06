@@ -53,6 +53,11 @@ final class HomeScreenCheckedEvent {
 /// Payload of any `*Failed` event carrying an `error` string.
 final class FailedEvent {
   const FailedEvent({required this.error});
+
+  /// Reads the `error` field, `UNKNOWN` when Telegram sent none.
+  factory FailedEvent.fromPayload(Map<String, Object?> payload) =>
+      FailedEvent(error: payload['error']?.toString() ?? 'UNKNOWN');
+
   final String error;
 }
 

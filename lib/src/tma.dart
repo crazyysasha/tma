@@ -2,13 +2,12 @@ import 'create_tma_stub.dart'
     if (dart.library.js_interop) 'web/create_tma_web.dart'
     as tma_factory;
 import 'environment.dart';
-import 'features/back_button.dart';
+import 'features/button.dart';
 import 'features/biometric_manager.dart';
 import 'features/bottom_button.dart';
 import 'features/haptic_feedback.dart';
 import 'features/location_manager.dart';
 import 'features/sensors.dart';
-import 'features/settings_button.dart';
 import 'features/storage.dart';
 import 'models/contact.dart';
 import 'models/init_data.dart';

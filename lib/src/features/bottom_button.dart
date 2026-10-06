@@ -1,9 +1,10 @@
-import 'dart:ui' show Color, VoidCallback;
+import 'dart:ui' show Color;
 
 import '../models/params.dart';
+import 'button.dart';
 
 /// `Telegram.WebApp.MainButton` and `Telegram.WebApp.SecondaryButton`.
-abstract class BottomButton {
+abstract class BottomButton extends TmaButton {
   const BottomButton();
 
   /// `main` or `secondary`.
@@ -11,7 +12,6 @@ abstract class BottomButton {
   String get text;
   Color? get color;
   Color? get textColor;
-  bool get isVisible;
   bool get isActive;
 
   /// Bot API 7.10+.
@@ -21,22 +21,13 @@ abstract class BottomButton {
   SecondaryButtonPosition? get position;
   bool get isProgressVisible;
 
-  /// Bot API 9.5+.
+  /// Bot API 9.5+. `null` while no icon is set.
   String? get iconCustomEmojiId;
 
-  Stream<void> get onClick;
-
   void setText(String text);
-  void show();
-  void hide();
   void enable();
   void disable();
   void showProgress({bool leaveActive = false});
   void hideProgress();
   void setParams(BottomButtonParams params);
-
-  VoidCallback addListener(void Function() listener) {
-    final sub = onClick.listen((_) => listener());
-    return sub.cancel;
-  }
 }

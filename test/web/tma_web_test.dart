@@ -45,9 +45,9 @@ final class FakeWebApp {
           ..['CloudStorage'] = _storage('CloudStorage')
           ..['DeviceStorage'] = _storage('DeviceStorage')
           ..['SecureStorage'] = _storage('SecureStorage')
-          ..['BiometricManager'] = JSObject()
+          ..['BiometricManager'] = _biometrics()
           ..['LocationManager'] = JSObject()
-          ..['Accelerometer'] = JSObject()
+          ..['Accelerometer'] = _sensor('Accelerometer')
           ..['Gyroscope'] = JSObject()
           ..['DeviceOrientation'] = JSObject();
 
@@ -171,6 +171,34 @@ final class FakeWebApp {
           return btn;
         }.toJS;
     return btn;
+  }
+
+  /// Mirrors the SDK quirk: `init` returns without calling back when the
+  /// manager is already initialised.
+  JSObject _biometrics() {
+    final b = JSObject()..['isInited'] = false.toJS;
+    b['init'] =
+        (JSFunction cb) {
+          calls.add(('BiometricManager.init', const []));
+          if ((b['isInited']! as JSBoolean).toDart) return;
+          callbacks['BiometricManager.init'] = cb;
+        }.toJS;
+    return b;
+  }
+
+  JSObject _sensor(String name) {
+    final s =
+        JSObject()
+          ..['isStarted'] = false.toJS
+          ..['x'] = 1.5.toJS
+          ..['y'] = null
+          ..['z'] = (-2).toJS;
+    s['start'] =
+        (JSAny params, JSFunction cb) {
+          calls.add(('$name.start', [params.dartify()]));
+          callbacks['$name.start'] = cb;
+        }.toJS;
+    return s;
   }
 
   JSObject _storage(String name) {
@@ -421,6 +449,102 @@ void main() {
       expect(show(), isNull);
       expect(fake.call('BackButton.show'), isNotNull);
       expect(Tma.instance.backButton.isVisible, isTrue);
+    });
+  });
+
+  group('version gate never leaves a future hanging', () {
+    test('sub-object futures reject on an old client', () async {
+      final fake = FakeWebApp(version: '7.0')..install();
+      final tma = Tma.instance;
+      await expectLater(
+        tma.biometricManager.init(),
+        throwsA(isA<TmaUnsupportedException>()),
+      );
+      await expectLater(
+        tma.accelerometer.start(),
+        throwsA(isA<TmaUnsupportedException>()),
+      );
+      await expectLater(
+        tma.deviceStorage.getItem('k'),
+        throwsA(
+          isA<TmaUnsupportedException>().having(
+            (e) => e.method,
+            'method',
+            'DeviceStorage.getItem',
+          ),
+        ),
+      );
+      expect(fake.call('BiometricManager.init'), isNull, reason: 'not called');
+    });
+
+    test('init resolves immediately when already initialised', () async {
+      final fake = FakeWebApp()..install();
+      fake.js['BiometricManager'] =
+          (fake.js['BiometricManager']! as JSObject)..['isInited'] = true.toJS;
+      await Tma.instance.biometricManager.init().timeout(
+        const Duration(seconds: 1),
+      );
+    });
+
+    test('init resolves through the SDK callback otherwise', () async {
+      final fake = FakeWebApp()..install();
+      final future = Tma.instance.biometricManager.init();
+      fake.resolve('BiometricManager.init');
+      await future;
+    });
+  });
+
+  group('sensors', () {
+    test('start sends default params and reads values', () async {
+      final fake = FakeWebApp()..install();
+      final sensor = Tma.instance.accelerometer;
+      final future = sensor.start();
+      expect(fake.call('Accelerometer.start'), [
+        {'refresh_rate': 1000},
+      ]);
+      fake.resolve('Accelerometer.start', true);
+      expect(await future, isTrue);
+      expect(sensor.value, const Vector3(1.5, 0, -2));
+    });
+
+    test('onChanged emits a fresh reading on accelerometerChanged', () async {
+      final fake = FakeWebApp()..install();
+      final readings = <Vector3>[];
+      final sub = Tma.instance.accelerometer.onChanged.listen(readings.add);
+      await pumpEventQueue();
+      (fake.js['Accelerometer']! as JSObject)['x'] = 3.toJS;
+      fake.emit('accelerometerChanged');
+      await pumpEventQueue();
+      expect(readings.single.x, 3);
+      await sub.cancel();
+    });
+  });
+
+  group('shared event streams', () {
+    test('button onClick and events share one JS listener', () async {
+      final fake = FakeWebApp()..install();
+      final tma = Tma.instance;
+      final a = tma.backButton.onClick.listen((_) {});
+      final b = tma.events.backButtonClicked.listen((_) {});
+      await pumpEventQueue();
+      expect(fake.listeners('backButtonClicked'), 1);
+      await a.cancel();
+      expect(fake.listeners('backButtonClicked'), 1);
+      await b.cancel();
+      expect(fake.listeners('backButtonClicked'), 0);
+    });
+
+    test('custom events decode arbitrary payloads', () async {
+      final fake = FakeWebApp()..install();
+      final values = <String?>[];
+      final sub = Tma.instance.events
+          .custom('futureEvent', (p) => p['value'] as String?)
+          .listen(values.add);
+      await pumpEventQueue();
+      fake.emit('futureEvent', {'value': 'x'});
+      await pumpEventQueue();
+      expect(values, ['x']);
+      await sub.cancel();
     });
   });
 }

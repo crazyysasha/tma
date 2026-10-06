@@ -77,6 +77,30 @@ void main() {
     expect(cancel, returnsNormally);
   });
 
+  test('sensors and storages follow the contract', () async {
+    final tma = Tma.instance;
+    expect(await tma.accelerometer.start(), isFalse);
+    expect(tma.deviceOrientation.value, OrientationData.zero);
+    expect(identical(tma.backButton, tma.settingsButton), isTrue);
+    expect(
+      tma.secureStorage.setItem('k', 'v'),
+      throwsA(
+        isA<TmaUnavailableException>().having(
+          (e) => e.message,
+          'message',
+          contains('SecureStorage.setItem'),
+        ),
+      ),
+    );
+  });
+
+  test('TmaEvents accepts a custom source', () async {
+    final events = TmaEvents(
+      <T>(type, decode) => Stream.value(decode({'isStateStable': true})),
+    );
+    expect((await events.viewportChanged.first).isStateStable, isTrue);
+  });
+
   test('debugOverride replaces the instance', () {
     const fake = TmaUnavailable(
       environment: TmaEnvironment.browser,

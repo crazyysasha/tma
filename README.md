@@ -65,8 +65,11 @@ Detection relies on the SDK itself: Telegram passes `tgWebAppPlatform` and
 
 ## Version guard
 
-Every method checks the client's Bot API version before touching JavaScript and
-throws `TmaUnsupportedException` with the required and current version. Errors
+Every method checks the client's Bot API version before touching JavaScript.
+Fire-and-forget methods throw `TmaUnsupportedException`; `Future` methods,
+including those of `BiometricManager`, `LocationManager`, sensors and
+storages, reject with it. On old clients the SDK silently skips some
+callbacks, so without this gate those futures would never complete. Errors
 raised by the SDK itself (`WebAppPopupOpened`, `WebAppTgUrlInvalid`, ...)
 surface as `TmaJsException`.
 
@@ -77,7 +80,10 @@ if (tma.isVersionAtLeast(const TmaVersion(8, 0))) tma.requestFullscreen();
 ## Events
 
 All `onEvent` types are exposed as broadcast streams; the JavaScript listener
-is attached on first subscription and removed on the last cancel.
+is attached on first subscription and removed on the last cancel. Button
+`onClick` and manager `onUpdated` streams are the same streams, so they never
+add a second listener. `events.custom(type, decode)` reaches event types that
+are newer than this package.
 
 ```dart
 tma.events.themeChanged.listen((_) => setState(() {}));

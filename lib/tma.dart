@@ -5,13 +5,12 @@ library;
 
 export 'src/environment.dart';
 export 'src/errors.dart';
-export 'src/features/back_button.dart';
 export 'src/features/biometric_manager.dart';
+export 'src/features/button.dart';
 export 'src/features/bottom_button.dart';
 export 'src/features/haptic_feedback.dart';
 export 'src/features/location_manager.dart';
 export 'src/features/sensors.dart';
-export 'src/features/settings_button.dart';
 export 'src/features/storage.dart';
 export 'src/models/chat.dart';
 export 'src/models/contact.dart';

@@ -65,7 +65,6 @@ extension type WebAppJS._(JSObject _) implements JSObject {
   @JS('DeviceOrientation')
   external DeviceOrientationJS get deviceOrientation;
 
-  external bool isVersionAtLeast(String version);
   external void setHeaderColor(String color);
   external void setBackgroundColor(String color);
   external void setBottomBarColor(String color);
@@ -120,12 +119,11 @@ extension type ButtonJS._(JSObject _) implements JSObject {
   external void hide();
 }
 
-extension type BottomButtonJS._(JSObject _) implements JSObject {
+extension type BottomButtonJS._(JSObject _) implements ButtonJS {
   external String get type;
   external String get text;
   external String? get color;
   external String? get textColor;
-  external bool get isVisible;
   external bool get isActive;
   external bool get hasShineEffect;
   external String? get position;
@@ -134,8 +132,6 @@ extension type BottomButtonJS._(JSObject _) implements JSObject {
   /// `false` until an icon is set, a string afterwards.
   external JSAny? get iconCustomEmojiId;
   external void setText(String text);
-  external void show();
-  external void hide();
   external void enable();
   external void disable();
   external void showProgress([bool? leaveActive]);
@@ -149,27 +145,26 @@ extension type HapticFeedbackJS._(JSObject _) implements JSObject {
   external void selectionChanged();
 }
 
-extension type CloudStorageJS._(JSObject _) implements JSObject {
+/// Calls shared by `CloudStorage`, `DeviceStorage` and `SecureStorage`.
+/// Callbacks are node-style: `(error, result)`.
+extension type KeyValueStorageJS._(JSObject _) implements JSObject {
   external void setItem(String key, String value, JSFunction callback);
   external void getItem(String key, JSFunction callback);
-  external void getItems(JSArray<JSString> keys, JSFunction callback);
   external void removeItem(String key, JSFunction callback);
+}
+
+extension type CloudStorageJS._(JSObject _) implements KeyValueStorageJS {
+  external void getItems(JSArray<JSString> keys, JSFunction callback);
   external void removeItems(JSArray<JSString> keys, JSFunction callback);
   external void getKeys(JSFunction callback);
 }
 
-extension type DeviceStorageJS._(JSObject _) implements JSObject {
-  external void setItem(String key, String value, JSFunction callback);
-  external void getItem(String key, JSFunction callback);
-  external void removeItem(String key, JSFunction callback);
+extension type DeviceStorageJS._(JSObject _) implements KeyValueStorageJS {
   external void clear(JSFunction callback);
 }
 
-extension type SecureStorageJS._(JSObject _) implements JSObject {
-  external void setItem(String key, String value, JSFunction callback);
-  external void getItem(String key, JSFunction callback);
+extension type SecureStorageJS._(JSObject _) implements KeyValueStorageJS {
   external void restoreItem(String key, JSFunction callback);
-  external void removeItem(String key, JSFunction callback);
   external void clear(JSFunction callback);
 }
 
@@ -198,22 +193,23 @@ extension type LocationManagerJS._(JSObject _) implements JSObject {
   external void openSettings();
 }
 
-/// `Accelerometer` and `Gyroscope` share the same shape.
-extension type SensorJS._(JSObject _) implements JSObject {
+/// Calls shared by `Accelerometer`, `Gyroscope` and `DeviceOrientation`.
+extension type SensorBaseJS._(JSObject _) implements JSObject {
   external bool get isStarted;
-  external JSNumber? get x;
-  external JSNumber? get y;
-  external JSNumber? get z;
   external void start(JSObject params, JSFunction callback);
   external void stop(JSFunction callback);
 }
 
-extension type DeviceOrientationJS._(JSObject _) implements JSObject {
-  external bool get isStarted;
+/// `Accelerometer` and `Gyroscope`.
+extension type SensorJS._(JSObject _) implements SensorBaseJS {
+  external JSNumber? get x;
+  external JSNumber? get y;
+  external JSNumber? get z;
+}
+
+extension type DeviceOrientationJS._(JSObject _) implements SensorBaseJS {
   external bool get absolute;
   external JSNumber? get alpha;
   external JSNumber? get beta;
   external JSNumber? get gamma;
-  external void start(JSObject params, JSFunction callback);
-  external void stop(JSFunction callback);
 }

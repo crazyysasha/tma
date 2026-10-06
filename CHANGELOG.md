@@ -1,3 +1,23 @@
+## 1.1.0
+
+* `TmaEvents` is a concrete class built from a `TmaEventSource`; the event
+  table exists once. `TmaEvents.none` replaces the stub implementation and
+  `events.custom(type, decode)` reaches event types newer than this package.
+* `BackButton` and `SettingsButton` are typedefs of the new `TmaButton`;
+  `BottomButton` extends it, so `addListener` exists once.
+* `MotionSensor` and `DeviceOrientation` are typedefs of the generic
+  `Sensor<V, P>`; `start` takes an optional `P?`.
+* Button click and manager update streams reuse the `events` streams, so one
+  event type never gets a second JS listener.
+* Fix: `BiometricManager`, `LocationManager`, sensors and storages are now
+  version-gated. On old clients the SDK skipped the callback and the future
+  never completed; it now rejects with `TmaUnsupportedException`.
+* Fix: `BiometricManager.init` / `LocationManager.init` resolve immediately
+  when already initialised (the SDK does not call back in that case).
+* Internal: one `_Gate` handles version checks and error routing with
+  constant `TmaVersion`s; sub-objects are created lazily; `initData` is
+  parsed once.
+
 ## 1.0.1
 
 * `requestChat` takes the `PreparedKeyboardButton.id` string, not an int.
